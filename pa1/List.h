@@ -77,6 +77,7 @@ void movePrev(List L);
 // If cursor is defined and not at back, move cursor one step toward the back of L;
 // If cursor is defined and at the back, cursor becomes undefined;
 // If cursor is undefined, do nothing.
+void moveNext(List L);
 
 // prepend()
 // Insert new element into L. If L is non-empty, insertion takes place before front element.
