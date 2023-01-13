@@ -126,5 +126,6 @@ List copyList(List L);
 // Returns a new List which is the concatenation of A and B.
 // The cursor in the new List is undefined, regardless of the states of the cursors in A and B.
 // The states of A and B are unchanged.
+List concatList(List A, List B);
 
 #endif
