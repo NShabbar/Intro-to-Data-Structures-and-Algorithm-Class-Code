@@ -121,11 +121,33 @@ int get(List L);
 
 // equals()
 //Returns true iff Lists A and B are in same state, and returns false otherwise.
-bool equals(List A, List B);
+bool equals(List A, List B){
+	if (A == NULL || B == NULL){
+		printf("List Error: calling equals() on NULL List reference.\n");
+		exit(EXIT_FAILURE);
+	}
+	bool eq;
+	Node N, M;
+	eq = (A -> length == B -> length);
+	N = A -> front;
+	M = B -> front;
+	while (eq && N != NULL){
+		eq = (N -> data == M -> data);
+		N = N -> next;
+		M = M -> next;
+	}
+	return eq;
+}
 
 // isEmpty()
 // Returns true if L is empty, otherwise returns false.
-bool isEmpty(List L);
+bool isEmpty(List L){
+	if (L == NULL){
+		printf("List Error: Calling isEmpty() on NULL List reference.\n");
+		exit(EXIT_FAILURE);
+	}
+	return(L -> length == 0);
+}
 
 
 // Manipulation procedures ----------------------------------------------------
@@ -160,11 +182,37 @@ void moveNext(List L);
 
 // prepend()
 // Insert new element into L. If L is non-empty, insertion takes place before front element.
-void prepend(List L, int x);
+void prepend(List L, int x){
+	Node N = newNode(data);
+	if (L == NULL){
+		printf("List Error: calling prepend() on NULL List reference.\n");
+		exit(EXIT_FAILURE);
+	}
+	if (isEmpty(L)){
+		L -> front = L -> back = N;
+	}else{
+		L -> front -> previous = N;
+		L -> front = N;
+	}
+	L -> length++;
+}
 
 // append()
 // Insert new element into L. If L is non-empty, insertion takes place after the back element.
 void append(List L, int x);
+	Node N = newNode(data);
+	if (L == NULL){
+		printf("List Error: calling append() on NULL List reference.\n");
+		exit(EXIT_FAILURE);
+	}
+	if (isEmpty(L)){
+		L -> back = L -> front = N;
+	}else{
+		L -> back -> next = N;
+		L -> back = N;
+	}
+	L -> length++;
+}
 
 // insertBefore()
 // Insert new element before cursor. Pre: length() > 0, index() >= 0.
@@ -176,11 +224,39 @@ void insertAfter(List L, int x);
 
 // deleteFront()
 // Delete the front element. Pre: length() > 0.
-void deleteFront(List L);
+void deleteFront(List L){
+	Node N = NULL;
+	if (L == NULL){
+		printf("List Error: calling deleteFront() on NULL List reference.\n");
+		exit(EXIT_FAILURE);
+	}
+	if (isEmpty(L){
+		printf("List Error: calling deleteFront() on empty List.\n");
+		exit(EXIT_FAILURE);
+	}else{
+		L -> front = L -> back = NULL;
+	}
+	L -> length--;
+	freeNode(&N);
+}
 
 // deleteBack()
 // Delete the back element. Pre: length() > 0.
 void deleteBack(List L);
+	Node N = NULL;
+	if (L == NULL){
+		printf("List Error: calling deleteBack() on NULL List reference.\n");
+		exit(EXIT_FAILURE);
+	}
+	if (isEmpty(L){
+		printf("List Error: calling deleteBack() on empty List.\n");
+		exit(EXIT_FAILURE);
+	}else{
+		L -> back = L -> front = NULL;
+	}
+	L -> length--;
+	freeNode(&N);
+}
 
 // delete()
 // Delete cursor element, making cursor undefined. Pre: length() > 0, index() >= 0.
@@ -192,13 +268,45 @@ void delete(List L);
 // printList()
 // Prints to the file pointed to by out, a string representation of L consisting of
 // a space separated sequence of integers, with front on left.
-void printList(FILE* out, List L);
+void printList(FILE* out, List L){
+	Node N = NULL;
+	if (L == NULL){
+		printf("List Error: calling printList() on NULL List reference.\n");
+		exit(EXIT_FAILURE);
+	}
+	for (N = L -> front; N != NULL; N = N -> next){
+		printf(FORMAT" ", N -> data);
+	}
+	printf("\n");
+}
 
 // copyList()
 // Returns a new List representing the same integer sequence as L.
 // The cursor in the new list is undefined, regardless of the state of the cursor in L.
 // The state of L is unchanged.
-List copyList(List L);
+List copyList(List L){
+	struct Node* current = L; // Used to iterate over the original list.
+	struct Node* newList = NULL; // Beginning of the new list.
+	struct Node* tail = NULL; // Point to the last node in a new list.
+	
+	while( current != NULL){
+		if (newList == NULL){ // For the first new node.
+			newList = (struct Node*)malloc(sizeof(struct Node));
+			newList -> data = current -> data;
+			newList -> next = NULL;
+			tail = newList;
+		}
+		else{
+			tail -> next = (struct Node*)malloc(sizeof(struct Node));
+			tail = tail -> next;
+			tail -> data = current -> data;
+			tail -> next = Null;
+		}
+		current = current -> next;
+	}
+	return newList;
+}
+
 
 // Extra Credit operation ------------------------------------------------------
 
