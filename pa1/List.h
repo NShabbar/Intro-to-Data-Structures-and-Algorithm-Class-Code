@@ -48,10 +48,10 @@ int get(List L);
 //Returns true iff Lists A and B are in same state, and returns false otherwise.
 bool equals(List A, List B);
 
-// isEmpty()
+/* // isEmpty()
 // Returns true if L is empty, otherwise returns false.
 bool isEmpty(List L);
-
+ */
 
 // Manipulation procedures ----------------------------------------------------
 
