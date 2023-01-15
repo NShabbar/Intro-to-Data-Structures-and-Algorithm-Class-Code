@@ -137,7 +137,7 @@ int get(List L){
 		printf("List Error: calling get() on empty List\n");
 	}
 	if (L -> cursor == NULL){
-		printf("List Error: calling get() not possible if cursor is NULL\n");
+		printf("List Error: calling get() not possible if cursor is undefined\n");
 	}
 	return(L -> cursor -> data;);
 }
@@ -179,7 +179,7 @@ bool isEmpty(List L){
 // Resets L to its original empty state.
 void clear(List L){
 	if (L == NULL){
-		printf("List Error: calling clear() on a NULL List reference\n");
+		printf("List Error: calling clear() on NULL List reference\n");
 		exit(EXIT_FAILURE);
 	}
 	while(length(L) > 0){
@@ -194,13 +194,15 @@ void clear(List L){
 
 // set()
 // Overwrites the cursor element's data with x. Pre: length() > 0, index() >= 0.
-void set(List L, int x);
+void set(List L, int x){
+	Node N = newNode(x);
+}
 
 // moveFront()
 // If L is non-empty, sets cursor under the front element, otherwise does nothing.
 void moveFront(List L){
 	if (L == NULL){
-		printf("List Error: calling moveFront() on a NULL List reference\n");
+		printf("List Error: calling moveFront() on NULL List reference\n");
 		exit(EXIT_FAILURE);
 	}
 	if (length(L) > 0){
@@ -213,7 +215,7 @@ void moveFront(List L){
 // If L is non-empty, sets cursor under the back element, otherwise does nothing.
 void moveBack(List L){
 	if (L == NULL){
-		printf("List Error: calling moveBack() on a NULL List reference\n");
+		printf("List Error: calling moveBack() on NULL List reference\n");
 		exit(EXIT_FAILURE);
 	}
 	if (length(L) > 0){
@@ -228,7 +230,7 @@ void moveBack(List L){
 // If cursor is undefined, do nothing.
 void movePrev(List L){
 	if (L == NULL){
-		printf("List Error: calling movePrev() on a NULL List reference\n");
+		printf("List Error: calling movePrev() on NULL List reference\n");
 		exit(EXIT_FAILURE);
 	}
 	if (L -> cursor == L -> front){
@@ -244,21 +246,36 @@ void movePrev(List L){
 // If cursor is defined and not at back, move cursor one step toward the back of L;
 // If cursor is defined and at the back, cursor becomes undefined;
 // If cursor is undefined, do nothing.
-void moveNext(List L);
+void moveNext(List L){
+	if (L == NULL){
+		printf("List Error: calling moveNext() on NULL List reference\n");
+		exit(EXIT_FAILURE);
+	}
+	if (L -> cursor == L -> back){
+		L -> cursor = NULL;
+		L -> index = -1;
+	}else{
+		L -> cursor = L -> cursor -> next;
+		L -> index++;
+	}
+}
 
 // prepend()
 // Insert new element into L. If L is non-empty, insertion takes place before front element.
 void prepend(List L, int x){
-	Node N = newNode(data);
+	Node N = newNode(x);
 	if (L == NULL){
 		printf("List Error: calling prepend() on NULL List reference\n");
 		exit(EXIT_FAILURE);
 	}
-	if (isEmpty(L)){
+	if (L -> front == NULL){
 		L -> front = L -> back = N;
+		L -> cursor = L -> front;
 	}else{
 		L -> front -> previous = N;
+		N -> next = L -> front;
 		L -> front = N;
+		L -> index++;
 	}
 	L -> length++;
 }
@@ -266,27 +283,70 @@ void prepend(List L, int x){
 // append()
 // Insert new element into L. If L is non-empty, insertion takes place after the back element.
 void append(List L, int x);
-	Node N = newNode(data);
+	Node N = newNode(x);
 	if (L == NULL){
 		printf("List Error: calling append() on NULL List reference\n");
 		exit(EXIT_FAILURE);
 	}
-	if (isEmpty(L)){
+	if (L -> == NULL){
 		L -> back = L -> front = N;
+		L -> cursor = L -> back;
 	}else{
 		L -> back -> next = N;
+		N -> previous = L -> back;
 		L -> back = N;
+		N -> next = NULL;
 	}
 	L -> length++;
 }
 
 // insertBefore()
 // Insert new element before cursor. Pre: length() > 0, index() >= 0.
-void insertBefore(List L, int x);
+void insertBefore(List L, int x){
+	Node N = newNode(x);
+	if (L == NULL){
+		printf("List Error: calling insertBefore() on NULL List reference\n");
+		exit(EXIT_FAILURE);
+	}
+	if (L -> cursor == NULL){
+		printf("List Error: calling insertBefore not possible if cursor is undefined\n");
+	}
+	if (L -> cursor == L -> front){
+		prepend(L, x);
+	}else{
+		N -> previous = L -> cursor -> previous;
+		N -> next = L -> cursor;
+		L -> cursor -> previous -> next = N;
+		L -> cursor -> previous = N;
+		L -> index++;
+		L -> length++;
+	}
+}
 
 // insertAfter()
 // Insert new element after cursor. Pre: length() > 0, index() >= 0.
-void insertAfter(List L, int x);
+void insertAfter(List L, int x){
+	Node N = newNode(x);
+	if (L == NULL){
+		printf("List Error: calling insertAfter() on NULL List reference\n");
+		exit(EXIT_FAILURE);
+	}
+	if (L -> cursor == NULL){
+		printf("List Error: calling insertAfter not possible if cursor is undefined\n");
+	}
+	if (length(L) <= 0){
+		printf("List Error: calling insertAfter on an empty List\n");
+	}
+	if (L -> cursor == L -> back){
+		append(L, x);
+	}else{
+		N -> next = L -> cursor -> next;
+		N -> previous = L -> cursor;
+		L -> cursor -> next -> previous = N;
+		L -> cursor -> next = N;
+		L -> length++;
+	}
+}
 
 // deleteFront()
 // Delete the front element. Pre: length() > 0.
@@ -296,14 +356,26 @@ void deleteFront(List L){
 		printf("List Error: calling deleteFront() on NULL List reference\n");
 		exit(EXIT_FAILURE);
 	}
-	if (isEmpty(L){
+	if (length(L) <= 0){
 		printf("List Error: calling deleteFront() on empty List\n");
-		exit(EXIT_FAILURE);
 	}else{
-		L -> front = L -> back = NULL;
+		if (L -> length == 1){
+			N = L -> front;
+			freeNode(&N);
+			L -> front = L -> back = NULL;
+			L -> cursor = NULL;
+			L -> index = -1;
+		}else{
+			N = L -> front;
+			L -> front = L -> front -> next;
+			L -> front -> previous = NULL;
+			if (L -> cursor != NULL){
+				L -> index--;
+			}
+			freeNode(&N);
+		}
+		L -> length--;
 	}
-	L -> length--;
-	freeNode(&N);
 }
 
 // deleteBack()
@@ -314,20 +386,56 @@ void deleteBack(List L);
 		printf("List Error: calling deleteBack() on NULL List reference\n");
 		exit(EXIT_FAILURE);
 	}
-	if (isEmpty(L){
+	if (length(L) <= 0){
 		printf("List Error: calling deleteBack() on empty List\n");
-		exit(EXIT_FAILURE);
 	}else{
-		L -> back = L -> front = NULL;
+		if (L -> length == 1){
+			N = L -> back;
+			freeNode(&N);
+			L -> back = L -> front = NULL;
+			L -> cursor = NULL;
+			L -> index = -1;
+		}else{
+			N = L -> back;
+			L -> back = L -> back -> previous;
+			L -> back -> next = NULL;
+			if (L -> index == L -> length - 1){
+				L -> index = -1;
+			}
+			freeNode(&N);
+		}
+		L -> length--;
 	}
-	L -> length--;
-	freeNode(&N);
 }
 
 // delete()
 // Delete cursor element, making cursor undefined. Pre: length() > 0, index() >= 0.
-void delete(List L);
-
+void delete(List L){
+	Node N = NULL;
+	if (L == NULL){
+		printf("List Error: calling delete() on NULL List reference\n");
+		exit(EXIT_FAILURE);
+	}
+	if (length(L) <= 0){
+		printf("List Error: calling delete() on empty List\n");
+	}
+	if (L -> cursor == NULL){
+		printf("List error: calling delete() not possible if cursor is undefined\n");
+	}
+	if (L -> cursor == L -> front){
+		deleteFront(L);
+	}
+	if (L -> cursor == L -> back){
+		deleteBack(L);
+	}else{
+		N = L -> cursor;
+		L -> cursor -> previous -> next = L -> cursor -> next;
+		L -> cursor -> next -> previous = L -> cursor -> previous;
+		freeNode(&N);
+		L -> length--;
+	}
+	L -> index = -1;
+}
 
 // Other operations -----------------------------------------------------------
 
@@ -351,7 +459,20 @@ void printList(FILE* out, List L){
 // The cursor in the new list is undefined, regardless of the state of the cursor in L.
 // The state of L is unchanged.
 List copyList(List L){
-	struct Node* current = L; // Used to iterate over the original list.
+	Node N = NULL;
+	List dup_list = newList();
+	if (length(L) > 0){
+		N = L -> front;
+		while (N != NULL){
+			append(dup_list, N -> data);
+			N = N -> next;
+		}
+	}
+	dup_list -> cursor = NULL;
+	dup_list -> index = -1;
+	return(dup_list);
+}
+	/* struct Node* current = L; // Used to iterate over the original list.
 	struct Node* newList = NULL; // Beginning of the new list.
 	struct Node* tail = NULL; // Point to the last node in a new list.
 	
@@ -371,7 +492,7 @@ List copyList(List L){
 		current = current -> next;
 	}
 	return newList;
-}
+} */
 
 
 // Extra Credit operation ------------------------------------------------------
