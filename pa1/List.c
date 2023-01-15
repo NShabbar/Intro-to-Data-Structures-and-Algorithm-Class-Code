@@ -37,6 +37,7 @@ Node newNode(QueueElement data){
    assert( N!=NULL );
    N -> data = data;
    N -> next = NULL;
+   N -> previous = NULL;
    return(N);
 }
 
@@ -76,7 +77,12 @@ void freeList(List* pL){
 
 // length()
 // Returns the number of elements in L.
-int length(List L);
+int length(List L){
+	if ( L == NULL){
+		printf("List Error: Calling length() on NULL List reference.\n");
+		exit(EXIT_FAILURE);
+	}
+	return(L -> length);
 
 // index()
 // Returns index of cursor element if defined, -1 otherwise.
@@ -84,19 +90,42 @@ int index(List L);
 
 // front()
 // Returns front element of L. Pre: length() > 0
-int front(List L);
+int front(List L){
+	if (L == NULL){
+		printf("List Error: Calling front() on NULL List reference.\n");
+		exit(EXIT_FAILURE);
+	}
+	if (isEmpty(L){
+		printf("List Error: Calling front() on an empty List.\n");
+		exit(EXIT_FAILURE);
+	}
+	return(L -> front -> data);
+}
 
 // back()
 // Returns front element of L. Pre: length() > 0
-int back(List L);
-
+int back(List L){
+	if (L == NULL){
+		printf("List Error: Calling back() on NULL List reference.\n");
+		exit(EXIT_FAILURE);
+	}
+	if (isEmpty(L){
+		printf("List Error: Calling back() on an empty List.\n");
+		exit(EXIT_FAILURE);
+	}
+	return(L -> back -> data);
+}
 // get()
-// Returns front element of L. Pre: length() > 0, index() >= 0
+// Returns cursor element of L. Pre: length() > 0, index() >= 0
 int get(List L);
 
 // equals()
 //Returns true iff Lists A and B are in same state, and returns false otherwise.
 bool equals(List A, List B);
+
+// isEmpty()
+// Returns true if L is empty, otherwise returns false.
+bool isEmpty(List L);
 
 
 // Manipulation procedures ----------------------------------------------------

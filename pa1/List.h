@@ -41,12 +41,16 @@ int front(List L);
 int back(List L);
 
 // get()
-// Returns front element of L. Pre: length() > 0, index() >= 0
+// Returns cursor element of L. Pre: length() > 0, index() >= 0
 int get(List L);
 
 // equals()
 //Returns true iff Lists A and B are in same state, and returns false otherwise.
 bool equals(List A, List B);
+
+// isEmpty()
+// Returns true if L is empty, otherwise returns false.
+bool isEmpty(List L);
 
 
 // Manipulation procedures ----------------------------------------------------
