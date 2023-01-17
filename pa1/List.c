@@ -368,22 +368,22 @@ void deleteFront(List L){
 	if (length(L) <= 0){
 		printf("List Error: calling deleteFront() on empty List\n");
 	}else{
-		if (L -> length == 1){
-			N = L -> front;
-			freeNode(&N);
-			L -> front = L -> back = NULL;
-			L -> cursor = NULL;
-			L -> index = -1;
+		if (L -> length == 1){ // case where there is only one item in list so deleting item will create empty set.
+			N = L -> front; // assign N node as front item.
+			freeNode(&N); // free N to remove.
+			L -> front = L -> back = NULL; // set front and back of list as NULL.
+			L -> cursor = NULL; // set cursor to undefined.
+			L -> index = -1; // set cursor index to undefined.
 		}else{
-			N = L -> front;
-			L -> front = L -> front -> next;
-			L -> front -> previous = NULL;
-			if (L -> cursor != NULL){
-				L -> index--;
+			N = L -> front; // assign N node as front item.
+			L -> front = L -> front -> next; // new front becomes old front's next node.
+			L -> front -> previous = NULL; // assign new front's previous as NULL.
+			if (L -> cursor != NULL){ // check that cursor does not become undefined.
+				L -> index--; // if cursor is not undefined, decrement index since item is being removed.
 			}
-			freeNode(&N);
+			freeNode(&N); // free N to remove.
 		}
-		L -> length--;
+		L -> length--; // decrement length.
 	}
 }
 
@@ -398,22 +398,22 @@ void deleteBack(List L);
 	if (length(L) <= 0){
 		printf("List Error: calling deleteBack() on empty List\n");
 	}else{
-		if (L -> length == 1){
-			N = L -> back;
-			freeNode(&N);
-			L -> back = L -> front = NULL;
-			L -> cursor = NULL;
-			L -> index = -1;
+		if (L -> length == 1){ // case where there is only one item in list so deleting item will create empty set.
+			N = L -> back; // assign N node as back item.
+			freeNode(&N); // free N to remove.
+			L -> back = L -> front = NULL; // set front and back nodes to NULL.
+			L -> cursor = NULL; // set cursor to undefined.
+			L -> index = -1; // set cursor index to undefined.
 		}else{
-			N = L -> back;
-			L -> back = L -> back -> previous;
-			L -> back -> next = NULL;
-			if (L -> index == L -> length - 1){
-				L -> index = -1;
+			N = L -> back; // set N node to current back node.
+			L -> back = L -> back -> previous; // set new back node to be old back node's previous node.
+			L -> back -> next = NULL; // sets new back node's next pointer to NULL.
+			if (L -> index == L -> length - 1){ // checks if cursor is at back of list.
+				L -> index = -1; // sets cursor index to undefined.
 			}
-			freeNode(&N);
+			freeNode(&N); // frees N to remove.
 		}
-		L -> length--;
+		L -> length--; // decrements length.
 	}
 }
 
@@ -431,19 +431,19 @@ void delete(List L){
 	if (L -> cursor == NULL){
 		printf("List error: calling delete() not possible if cursor is undefined\n");
 	}
-	if (L -> cursor == L -> front){
+	if (L -> cursor == L -> front){ // case where cursor is at front.
 		deleteFront(L);
 	}
-	if (L -> cursor == L -> back){
+	if (L -> cursor == L -> back){ // case where cursor is at back.
 		deleteBack(L);
 	}else{
-		N = L -> cursor;
-		L -> cursor -> previous -> next = L -> cursor -> next;
-		L -> cursor -> next -> previous = L -> cursor -> previous;
-		freeNode(&N);
-		L -> length--;
+		N = L -> cursor; // set N node to current cursor node.
+		L -> cursor -> previous -> next = L -> cursor -> next; // set old cursor's previous ref to next.
+		L -> cursor -> next -> previous = L -> cursor -> previous; // set old cursor's next ref to previous.
+		freeNode(&N); // free N node.
+		L -> length--; // decrement list length.
 	}
-	L -> index = -1;
+	L -> index = -1; // sets cursor index to undefined.
 }
 
 // Other operations -----------------------------------------------------------
@@ -469,16 +469,16 @@ void printList(FILE* out, List L){
 // The state of L is unchanged.
 List copyList(List L){
 	Node N = NULL;
-	List dup_list = newList();
+	List dup_list = newList(); // intiate a new list to copy to.
 	if (length(L) > 0){
-		N = L -> front;
+		N = L -> front; // sets N node to front item.
 		while (N != NULL){
-			append(dup_list, N -> data);
-			N = N -> next;
+			append(dup_list, N -> data); // append data to new, dup list. Does not change current list.
+			N = N -> next; // set N node to next item to be copied.
 		}
 	}
-	dup_list -> cursor = NULL;
-	dup_list -> index = -1;
+	dup_list -> cursor = NULL; // set copy list cursor to undefined.
+	dup_list -> index = -1; // set copy list cursor index to undefined.
 	return(dup_list);
 }
 	/* struct Node* current = L; // Used to iterate over the original list.
