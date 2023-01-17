@@ -57,7 +57,7 @@ void freeNode(Node* pN){
 List newList(){
 	List L;
 	L = malloc(sizeof(ListObj));
-	assert(L! = NULL);
+	assert(L != NULL);
 	L -> front = L -> back = NULL;
 	L -> cursor = NULL; // sets cursor as undefined.
 	L -> index = -1; // sets cursor index as undefined.
@@ -87,6 +87,7 @@ int length(List L){
 		exit(EXIT_FAILURE);
 	}
 	return(L -> length);
+}
 
 // index()
 // Returns index of cursor element if defined, -1 otherwise.
@@ -139,7 +140,7 @@ int get(List L){
 	if (L -> cursor == NULL){
 		printf("List Error: calling get() not possible if cursor is undefined\n");
 	}
-	return(L -> cursor -> data;);
+	return(L -> cursor -> data);
 }
 
 // equals()
@@ -196,7 +197,6 @@ void clear(List L){
 // set()
 // Overwrites the cursor element's data with x. Pre: length() > 0, index() >= 0.
 void set(List L, int x){
-	Node N = newNode(x);
 	if (L == NULL){
 		printf("List Error: calling set() on NULL List reference\n");
 		exit(EXIT_FAILURE);
@@ -204,7 +204,7 @@ void set(List L, int x){
 	if (length(L) > 0){
 		printf("List Error: calling set() on an empty set\n");
 	}
-	return((L -> cursor) -> data = N); // change data of node. () important because without them, it will change node itself.
+	(L -> cursor) -> data = x; // change data of node. () important because without them, it will change node itself.
 }
 
 // moveFront()
@@ -291,13 +291,13 @@ void prepend(List L, int x){
 
 // append()
 // Insert new element into L. If L is non-empty, insertion takes place after the back element.
-void append(List L, int x);
+void append(List L, int x){
 	Node N = newNode(x);
 	if (L == NULL){
 		printf("List Error: calling append() on NULL List reference\n");
 		exit(EXIT_FAILURE);
 	}
-	if (L -> == NULL){
+	if (L -> back == NULL){
 		L -> back = L -> front = N; // since the back of the list is Null, front is too. Set both to N element.
 		L -> cursor = L -> back; // place cursor to the back of list.
 	}else{
@@ -389,7 +389,7 @@ void deleteFront(List L){
 
 // deleteBack()
 // Delete the back element. Pre: length() > 0.
-void deleteBack(List L);
+void deleteBack(List L){
 	Node N = NULL;
 	if (L == NULL){
 		printf("List Error: calling deleteBack() on NULL List reference\n");
@@ -458,7 +458,7 @@ void printList(FILE* out, List L){
 		exit(EXIT_FAILURE);
 	}
 	for (N = L -> front; N != NULL; N = N -> next){
-		printf(FORMAT" ", N -> data);
+		printf("%d ", N -> data);
 	}
 	printf("\n");
 }

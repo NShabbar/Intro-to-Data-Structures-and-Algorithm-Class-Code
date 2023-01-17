@@ -17,13 +17,13 @@ int main(int argc, char* argv[]){
 	//-----------------------------------------------------------------------------
 	printf("Testing prepend() function of List.c\n");
 	
-	for (i = 1; i<= 10; i++){
+	for (i = 10; i >= 1; i--){
 		prepend(A, i);
 		// prepend(B, i);
 	}
 	
 	printf("Printing List A: ");
-	printList(A);
+	printList(stdout, A);
 	printf("\n");
 	// printf("Printing List B: ");
 	// printList(B);
@@ -35,13 +35,13 @@ int main(int argc, char* argv[]){
 	printf("\n");
 	printf("Testing append() function of List.c\n");
 	
-	for (i = 10; i <= 15; i++){
+	for (i = 11; i <= 15; i++){
 		append(A, i);
 		// append(B, i);
 	}
 	
 	printf("Printing List A: ");
-	printList(A);
+	printList(stdout, A);
 	printf("\n");
 	// printf("Printing List B: ");
 	// printList(B);
@@ -52,12 +52,12 @@ int main(int argc, char* argv[]){
 	//-----------------------------------------------------------------------------
 	printf("\n");
 	printf("Testing copyList() function of List.c\n");
-	list B = copyList(A);
-	return(B);
+	List B = copyList(A);
+	printList(stdout, B);
 	
 	
 	// Equals Test
 	//-----------------------------------------------------------------------------
 	
 	
-	
+}

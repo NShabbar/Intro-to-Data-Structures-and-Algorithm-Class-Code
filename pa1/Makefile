@@ -11,7 +11,7 @@
 ListTest : ListTest.o List.o
 	gcc -std=c17 -Wall -o ListTest ListTest.o List.o
 
-ListTest.o : ListTestc List.h
+ListTest.o : ListTest.c List.h
 	gcc -std=c17 -Wall -c ListTest.c
 
 ListClient: ListClient.o List.o
@@ -24,10 +24,10 @@ List.o : List.c List.h
 	gcc -std=c17 -Wall -c List.c
 
 clean :
-	rm -f ListTest ListClient Lex.o ListClient.o List.o
+	rm -f ListTest ListClient ListTest.o ListClient.o List.o
 
 checkClient : 
 	valgrind --leak-check=full ListClient
 
-checkLex :
-	valgrind --leak-check=full Lex in3 blah3
+checkListTest :
+	valgrind --leak-check=full ListTest in3 blah3
