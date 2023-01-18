@@ -58,6 +58,51 @@ int main(int argc, char* argv[]){
 	
 	// Equals Test
 	//-----------------------------------------------------------------------------
+	printf("\n");
+	printf("Testing equals() function of List.c\n");
+	equals(A, B);
+	printf("%s", equals(A,B)?"true":"false");
 	
 	
+	// Length Test
+	//-----------------------------------------------------------------------------
+	printf("\n");
+	printf("Testing length() function of List.c\n");
+	printf("Printing length of List A: ");
+	printf("%d", length(A));
+	
+	
+	// Index, and Cursor Movement Tests
+	//-----------------------------------------------------------------------------
+	printf("\n");
+	printf("Testing index(), moveFront, moveBack, movePrev, and moveNext functions of List.c\n");
+	printf("Printing index of List A before any movement: ");
+	printf("%d", index(A));
+	printf("\nGet value %d", get(A));
+	
+	printf("\n");
+	printf("Printing index of List A at the front of the list: ");
+	moveFront(A);
+	printf("%d", index(A));
+	
+	printf("\n");
+	printf("Printing index of List A at the back of the list: ");
+	moveBack(A);
+	printf("%d", index(A));
+	
+	printf("\n");
+	printf("Printing index of List A at the previous index of the list: ");
+	movePrev(A);
+	printf("%d", index(A));
+	
+	printf("\n");
+	printf("Printing index of List A at the next index of the list: ");
+	moveNext(A);
+	printf("%d", index(A));
+	
+	printf("\n");
+	printf("Printing index of List A at undefined of the list: ");
+	moveFront(A);
+	movePrev(A);
+	printf("%d\n", index(A));
 }

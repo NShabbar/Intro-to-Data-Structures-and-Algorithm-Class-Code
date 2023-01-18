@@ -99,6 +99,9 @@ int index(List L){
 	if (length(L) <= 0){
 		return(-1); // empty list, returns undefined cursor.
 	}
+	if (L -> cursor == NULL){
+		return(-1);
+	}
 	return L -> index;
 }
 
@@ -116,7 +119,7 @@ int front(List L){
 }
 
 // back()
-// Returns front element of L. Pre: length() > 0
+// Returns back element of L. Pre: length() > 0
 int back(List L){
 	if (L == NULL){
 		printf("List Error: Calling back() on NULL List reference\n");
@@ -277,6 +280,9 @@ void prepend(List L, int x){
 		printf("List Error: calling prepend() on NULL List reference\n");
 		exit(EXIT_FAILURE);
 	}
+	if (L -> cursor != NULL){
+		L -> index++; //increment index value.
+	}
 	if (L -> front == NULL){
 		L -> front = L -> back = N; // because front is NULL, set front and back = then set them to N element.
 		L -> cursor = L -> front; // set cursor to the front of list.
@@ -284,7 +290,6 @@ void prepend(List L, int x){
 		L -> front -> previous = N; // define "old" front to point to previous which is new N element.
 		N -> next = L -> front; // points N element next item to "old" front item.
 		L -> front = N; // front is now new N element.
-		L -> index++; //increment index value.
 	}
 	L -> length++; // increment list length.
 }
