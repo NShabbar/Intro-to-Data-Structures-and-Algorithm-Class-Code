@@ -9,15 +9,15 @@
 #include<string.h>
 #include "List.h"
 
-#define MAX_LEN 300;
+#define MAX_LEN 300
 
-int main(int argc, char * argv{}){
+int main(int argc, char * argv[]){
 	
 	int token_count, line_count;
 	FILE *in, *out;
 	char line[MAX_LEN];
-	char tokenBuffer[MAX_LEN];
-	char* token;
+	//char tokenBuffer[MAX_LEN];
+	char** token;
 	
 	// Check command line for correct number of arguments
 	if (argc != 3){
@@ -55,19 +55,19 @@ int main(int argc, char * argv{}){
 	
 	token_count = 0;
 	
-	while (fgets(line, sizeof(line), in) != NULL)){
+	while (fgets(line, sizeof(line), in) != NULL){
 		strcpy(token[token_count], line);
 		token_count++;
 	}
 	
 	List A = newList();
-	append(list, 0);
+	append(A, 0);
 	
 	for (int i = 1; i < line_count; i++){
 		moveFront(A);
 		char* element = token[i];
 		int comp_count = i;
-		while (comp_count > 0 && strcmp(element, token(get(A)]) >= 0){
+		while (comp_count > 0 && strcmp(element, token[get(A)]) >= 0){
 			moveNext(A);
 			comp_count--;
 		}
