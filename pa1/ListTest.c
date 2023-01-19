@@ -72,37 +72,61 @@ int main(int argc, char* argv[]){
 	printf("%d", length(A));
 	
 	
-	// Index, and Cursor Movement Tests
+	// Index, get, and Cursor Movement Tests
 	//-----------------------------------------------------------------------------
 	printf("\n");
-	printf("Testing index(), moveFront, moveBack, movePrev, and moveNext functions of List.c\n");
+	printf("Testing index(), moveFront, moveBack, movePrev, moveNext and get functions of List.c\n");
 	printf("Printing index of List A before any movement: ");
 	printf("%d", index(A));
-	printf("\nGet value %d", get(A));
 	
 	printf("\n");
 	printf("Printing index of List A at the front of the list: ");
 	moveFront(A);
 	printf("%d", index(A));
+	printf("\nGetting value of index: %d", get(A));
 	
 	printf("\n");
 	printf("Printing index of List A at the back of the list: ");
 	moveBack(A);
 	printf("%d", index(A));
+	printf("\nGetting value of index: %d", get(A));
 	
 	printf("\n");
 	printf("Printing index of List A at the previous index of the list: ");
 	movePrev(A);
 	printf("%d", index(A));
+	printf("\nGetting value of index: %d", get(A));
 	
 	printf("\n");
 	printf("Printing index of List A at the next index of the list: ");
 	moveNext(A);
 	printf("%d", index(A));
+	printf("\nGetting value of index: %d", get(A));
 	
 	printf("\n");
 	printf("Printing index of List A at undefined of the list: ");
 	moveFront(A);
 	movePrev(A);
 	printf("%d\n", index(A));
+	
+	// Front Test
+	//-----------------------------------------------------------------------------
+	printf("\n");
+	printf("Testing front() function of List.c in List A\n");
+	printf("Printing front element of List A: %d", front(A));
+	
+	// Back Test
+	//-----------------------------------------------------------------------------
+	printf("\n");
+	printf("Testing back() function of List.c in List A\n");
+	printf("Printing back element of List A: %d", back(A));
+	
+	// Set Test
+	//-----------------------------------------------------------------------------
+	printf("\n");
+	printf("Testing set() function of List.c by changing first element to 0 in List A\n");
+	moveFront(A);
+	set(A, 0);
+	printList(stdout, A);
+	printf("\n");
 }

@@ -204,7 +204,7 @@ void set(List L, int x){
 		printf("List Error: calling set() on NULL List reference\n");
 		exit(EXIT_FAILURE);
 	}
-	if (length(L) > 0){
+	if (length(L) <= 0){
 		printf("List Error: calling set() on an empty set\n");
 	}
 	(L -> cursor) -> data = x; // change data of node. () important because without them, it will change node itself.
@@ -283,9 +283,8 @@ void prepend(List L, int x){
 	if (L -> cursor != NULL){
 		L -> index++; //increment index value.
 	}
-	if (L -> front == NULL){
+	if (length(L) <= 0){
 		L -> front = L -> back = N; // because front is NULL, set front and back = then set them to N element.
-		L -> cursor = L -> front; // set cursor to the front of list.
 	}else{
 		L -> front -> previous = N; // define "old" front to point to previous which is new N element.
 		N -> next = L -> front; // points N element next item to "old" front item.
@@ -302,9 +301,8 @@ void append(List L, int x){
 		printf("List Error: calling append() on NULL List reference\n");
 		exit(EXIT_FAILURE);
 	}
-	if (L -> back == NULL){
+	if (length(L) <= 0){
 		L -> back = L -> front = N; // since the back of the list is Null, front is too. Set both to N element.
-		L -> cursor = L -> back; // place cursor to the back of list.
 	}else{
 		L -> back -> next = N; // define "old" back as pointing to next which is new N element.
 		N -> previous = L -> back; // repoint previous item as the old "back" item.
