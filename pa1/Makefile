@@ -1,4 +1,7 @@
 #------------------------------------------------------------------------------
+# Nadia Shabbar
+# nshabbar
+# pa1
 # Makefile for CSE 101 Programming Assignment 1
 #
 # make                   makes ListTest
@@ -29,7 +32,7 @@ List.o : List.c List.h
 	gcc -std=c17 -Wall -c List.c
 
 clean :
-	rm -f Lex ListClient ListTest.o ListClient.o List.o
+	rm -f *.o Lex ListClient ListTest
 
 checkClient : 
 	valgrind --leak-check=full ListClient
