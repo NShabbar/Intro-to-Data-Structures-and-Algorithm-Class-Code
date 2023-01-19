@@ -129,4 +129,60 @@ int main(int argc, char* argv[]){
 	set(A, 0);
 	printList(stdout, A);
 	printf("\n");
+	
+	// Clear Test
+	//-----------------------------------------------------------------------------
+	printf("\n");
+	printf("Testing clear() function of List.c by clearing List A\n");
+	clear(A);
+	printf("Adding single item to List A in order to print\n");
+	prepend(A, 1);
+	printList(stdout, A);
+	printf("\n");
+	
+	// Delete Test
+	//-----------------------------------------------------------------------------
+	printf("\n");
+	printf("Testing delete() function of List.c by deleting second item in List B\n");
+	moveFront(B);
+	moveNext(B);
+	delete(B);
+	printList(stdout, B);
+	printf("\n");
+	
+	// Delete Front Test
+	//-----------------------------------------------------------------------------
+	printf("\n");
+	printf("Testing deleteFront() function of List.c in List B\n");
+	deleteFront(B);
+	printList(stdout, B);
+	printf("\n");
+	
+	// Delete Back Test
+	//-----------------------------------------------------------------------------
+	printf("\n");
+	printf("Testing deleteBack() function of List.c in List B\n");
+	deleteBack(B);
+	printList(stdout, B);
+	printf("\n");
+	
+	// Insert Before Test
+	//-----------------------------------------------------------------------------
+	printf("\n");
+	printf("Testing insertBefore() function of List.c in List B by adding item in front of second element\n");
+	moveFront(B);
+	moveNext(B);
+	insertBefore(B, 100);
+	printList(stdout, B);
+	printf("\n");
+	
+	// Insert After Test
+	//-----------------------------------------------------------------------------
+	printf("\n");
+	printf("Testing insertAfter() function of List.c in List B by adding item behind of second element\n");
+	moveFront(B);
+	moveNext(B);
+	insertAfter(B, 200);
+	printList(stdout, B);
+	printf("\n");
 }
