@@ -515,4 +515,24 @@ List copyList(List L){
 // Returns a new List which is the concatenation of A and B.
 // The cursor in the new List is undefined, regardless of the states of the cursors in A and B.
 // The states of A and B are unchanged.
-List concatList(List A, List B);
+List concatList(List A, List B){
+	if (A == NULL || B == NULL){
+		fprintf(stderr, "List Error: calling concatList on NULL list reference\n");
+		exit(EXIT_FAILURE);
+	}
+	List C = newList();
+	Node *current = A -> front;
+	
+	for (int i = 0; i < A -> length; i++){
+		append(C, current -> value);
+		current = current -> next;
+	}
+	
+	current = B -> front;
+	
+	for (int i= 0, i < B -> length; i++){
+		append (C, current -> value);
+		current = current -> next;
+	}
+	return C;
+}
