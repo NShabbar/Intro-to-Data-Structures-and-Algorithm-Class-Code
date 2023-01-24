@@ -173,7 +173,31 @@ void addArc(Graph G, int u, int v);
 
 // Function BFS() runs the BFS algorithm on the Graph G with source s,
 // setting the color, distance, parent, and source fields of G accordingly.
-void BFS(Graph G, int s);
+void BFS(Graph G, int s){
+	for (int i = 0; i < G -> order; i++){
+		color[i] = WHITE; // set all adj elements to be WHITE.
+		dist[i] = INF; // set distance to INF.
+		parent[i] = NIL; // set parents to NIL.
+	}
+	color[s] = GRAY; // discover the source, s, color it GRAY.
+	dist[s] = 0; // set distance of source to 0 since there is no path from source to source.
+	parent[s] = NIL; // set parent of source to NIL since source has no parent.
+	List L = newList; // create new list for BFS creation.
+	append(L, s); // add source to graph.
+	while (L != NULL){
+		int i = deleteFront(L);
+		for (int j = 0; j <= adj[i]; j++){
+			if (color[j] == WHITE){
+				color[j] = GRAY;
+				dist[j] = dist[i] + 1;
+				parent[j] = i;
+				append(L, j);
+			}
+		}
+		color[i] = BLACK;
+	}
+}
+	
 
 /*** Other operations ***/
 
