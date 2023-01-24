@@ -16,7 +16,7 @@
 #include "List.h"
 
 #define WHITE 1
-#define GREY 2
+#define GRAY 2
 #define BLACK 3
 
 // structs --------------------------------------------------------------------
@@ -24,7 +24,7 @@
 
 // private GraphObj type
 typedef struct GraphObj{
-	List *adj; // Added this because forgot these need to be matrices...
+	List *adj; // Added this because this is for adjacents.
 	int *color; // Color of Node.
 	int *parent; // Parent of next Node.
 	int *dist; // Distance.
