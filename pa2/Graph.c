@@ -43,26 +43,26 @@ Graph newGraph(int n){
 		exit(EXIT_FAILURE);
 	}
 	Graph G = malloc(sizeof(GraphObj)); // assign memory for size of graph G.
-	G -> size = 0; // initialize size to zero.
+	G -> size = 0; // initialize size to zero since nothing in graph.
 	G -> order = n; // initialize order to n.
 	G -> color = calloc(n+1, sizeof(int)); // intialize color to 1 more than order.
 	G -> parent = calloc(n+1, sizeof(int)); // initialize parent to 1 more than order.
 	G -> dist = calloc(n+1, sizeof(int)); // initialize distance to 1 more than order.
 	G -> source = NIL; // intialize source to a value below zero.
 	for (int i = 0; i < n+1; i++){
-		G -> adj[i] = newList(); // create list for each matrix element.
+		G -> adj[i] = newList(); // create list for each adjacent element.
 		G -> parent[i] = NIL; // NIL because DNE yet.
 		G -> dist[i] = INF; // infinity because there is no path yet.
 	}
-	return G;
+	return G; // return graph.
 }
 
 // Function freeGraph() frees all heap memory associated with the Graph *pG,
 // then sets the handle *pG to NULL.
 void freeGraph(Graph* pG){
-	Graph G = *pG;
+	Graph G = *pG; // pointer to G.
 	for (int i = 0; i <= G -> order; i++){
-		freeList(&(G -> adj[i]));
+		freeList(&(G -> adj[i])); // since each element is a list of adjacent lists, need to free each list.
 	}
 	free(G -> color); // free color node.
 	free(G -> parent); // free parent node.
@@ -96,6 +96,10 @@ int getSource(Graph G){
 	if (G == NULL){
 		fprintf(stderr, "Graph Error: calling getSource on NULL graph pointer.");
 		exit(EXIT_FAILURE);
+
+	}
+	if (G -> source = NIL){ // if source is NIL, return NIL.
+		return NIL;
 	}
 	return G -> source; // just need to return source.
 }
@@ -120,7 +124,7 @@ int getDist(Graph G, int u){
 		fprintf(stderr, "Graph Error: calling getDist on NULL graph pointer.");
 		exit(EXIT_FAILURE);
 	}
-	if (G -> source < 0){ // checks for if source is less than 0 because no path available so no distance.
+	if (G -> source == NIL){ // checks for if source is NIL no path available so no distance.
 		return INF;
 	}
 	return G -> dist[u]; // returns distance of path to int u.
@@ -129,15 +133,22 @@ int getDist(Graph G, int u){
 //Function getPath() appends to the List L the vertices of a shortest path in G from 
 // source to u, or appends to L the value NIL if no such path exists.
 void getPath(List L, Graph G, int u){
+	if (G == NULL){
+		fprintf(stderr, "Graph Error: calling getPath on NULL graph pointer.");
+		exit(EXIT_FAILURE);
+	}
 	if (G -> source == NIL){ // checks for if source is NIL because if it is, then there is no path.
 		fprintf(stderr, "Graph Error: calling getDist when Breadth First Search has not been done\n");
 		exit(EXIT_FAILURE);
 	}
-	if (G -> == u){
+	if (G -> source == u){ // append element if source is equal to that element.
 		append(L, u);
 	}
-	else if ( G -> parent[u] != NIL){
-		getPath(L, G, G -> parent[u]);
+	else if ( G -> parent[u] == NIL){ // if parent is NIL, append NIL.
+		fprintf(G, " is not reachable from ", u); // statement stating where pointer is not reachable from.
+		append(L, NIL); // appends NIL.
+	}else{
+		getPath(L, G, G -> parent[u]); // recursive call to get path.
 		append(L, u);
 		}
 	}
@@ -146,9 +157,10 @@ void getPath(List L, Graph G, int u){
 
 // Function makeNull() deletes all edges of G, restoring it to its original (no edge) state.
 void makeNull(Graph G){
-	int null = G -> order;
-	freeGraph(&G);
-	G = newGraph(null);
+	for (int i = 1; i <= getOrder(G); i++){ // iterate through the order of graph.
+		clear (G -> adj[i]); // clear adj lists per order as it iterates.
+	}
+	G -> size = 0; // set size to zero, since graph should be empty.
 }
 
 // Function addEdge() inserts a new edge joining u to v, i.e. u is added to the adjacency 
