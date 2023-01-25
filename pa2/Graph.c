@@ -165,11 +165,41 @@ void makeNull(Graph G){
 
 // Function addEdge() inserts a new edge joining u to v, i.e. u is added to the adjacency 
 // List of v, and v to the adjacency List of u
-void addEdge(Graph G, int u, int v);
+void addEdge(Graph G, int u, int v){
+	if (G == NULL){
+		fprintf(stderr, "Graph Error: calling addEdge on NULL graph pointer.");
+		exit(EXIT_FAILURE);
+	}
+	if (getOrder(G) < s || s < 1){
+		fprintf(stderr, "Graph Error: calling addEdge on vertex not in range.");
+		exit(EXIT_FAILURE);
+	}
+	if (length(G -> adj[u]) == 0){
+		append(G -> adj[u], v);
+	}
+	moveFront(G -> adj[u]);
+	while (get(G -> adj[u]) != NIL && get(G -> adj[u] < v){
+		moveNext(G -> adj[u]);
+	}
+	if (get(G -> adj[u]) == NIL){
+		append(G -> adj[u], v);
+	}
+	insertBefore(G -> adj[u], v);
 
 // Function addArc() inserts a new directed edge from u to v, i.e. v is added to the adjacency 
 // List of u (but not u to the adjacency List of v). 
-void addArc(Graph G, int u, int v);
+void addArc(Graph G, int u, int v){
+	if (G == NULL){
+		fprintf(stderr, "Graph Error: calling addArc on NULL graph pointer.");
+		exit(EXIT_FAILURE);
+	}
+	if (getOrder(G) < s || s < 1){
+		fprintf(stderr, "Graph Error: calling addArc on vertex not in range.");
+		exit(EXIT_FAILURE);
+	}
+	append( G -> adj[u], v);
+	G -> size++; // Professor mentioned in lecture we needed to do size++ here. I am not too sure why. Need to ask.
+}
 
 // Function BFS() runs the BFS algorithm on the Graph G with source s,
 // setting the color, distance, parent, and source fields of G accordingly.
@@ -182,6 +212,7 @@ void BFS(Graph G, int s){
 		fprintf(stderr, "Graph Error: calling BFS on vertex not in range.");
 		exit(EXIT_FAILURE);
 	}
+	freeGraph(G); // Professor mentioned needing to clear the tree due to potential garbage so adding this here.
 	G -> source = s; // set source to source since s is source.
 	for (int i = 0; i <= getOrder(G); i++){
 		color[i] = WHITE; // set all adj elements to be WHITE.
@@ -213,7 +244,19 @@ void BFS(Graph G, int s){
 
 // Finally, function printGraph() prints the adjacency list representation of G to the file 
 // pointed to by out.
-void printGraph(FILE* out, Graph G);
+void printGraph(FILE* out, Graph G){
+	if (G == NULL){
+		fprintf(stderr, "Graph Error: calling printGraph on NULL graph pointer.");
+		exit(EXIT_FAILURE);
+	}
+	for (int i = 0, i <= getOrder(G); i++){
+		fprintf(out, "%d: ", i); //print output for each order.
+		moveFront(G -> adj[i]); // set cursor to front.
+	}
+	fprintf(out, "\n");
+}
+
+		
 
 	
 	
