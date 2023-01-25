@@ -38,14 +38,17 @@ Graph newGraph(int n){
 	Graph G = malloc(sizeof(GraphObj)); // assign memory for size of graph G.
 	G -> size = 0; // initialize size to zero since nothing in graph.
 	G -> order = n; // initialize order to n.
-	G -> color = calloc(n+1, sizeof(int)); // intialize color to 1 more than order.
+
+	/* G -> color = calloc(n+1, sizeof(int)); // intialize color to 1 more than order.
 	G -> parent = calloc(n+1, sizeof(int)); // initialize parent to 1 more than order.
 	G -> dist = calloc(n+1, sizeof(int)); // initialize distance to 1 more than order.
-	G -> source = NIL; // intialize source to a value below zero.
+	G -> source = NIL; // intialize source to a value below zero. */
 	for (int i = 0; i < n+1; i++){
 		G -> adj[i] = newList(); // create list for each adjacent element.
 		G -> parent[i] = NIL; // NIL because DNE yet.
 		G -> dist[i] = INF; // infinity because there is no path yet.
+		G -> color[i] = WHITE;
+		G -> source[i] = NIL;
 	}
 	return G; // return graph.
 }
@@ -150,7 +153,10 @@ void getPath(List L, Graph G, int u){
 // Function makeNull() deletes all edges of G, restoring it to its original (no edge) state.
 void makeNull(Graph G){
 	for (int i = 1; i <= getOrder(G); i++){ // iterate through the order of graph.
-		clear (G -> adj[i]); // clear adj lists per order as it iterates.
+		clear(G -> adj[i]); // clear adj lists per order as it iterates.
+		G -> color[i] = WHITE;
+		G -> parent[i] = NIL;
+		G -> dist[i] = INF;
 	}
 	G -> size = 0; // set size to zero, since graph should be empty.
 }
