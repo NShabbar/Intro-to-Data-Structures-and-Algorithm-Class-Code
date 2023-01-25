@@ -521,14 +521,14 @@ List concatList(List A, List B){
 		exit(EXIT_FAILURE);
 	}
 	List C = newList();
-	Node *current = A -> front;
+	Node current = A -> front;
 	for (int i = 0; i < A -> length; i++){
-		append(C, current -> value);
+		append(C, current -> data);
 		current = current -> next;
 	}	
 	current = B -> front;
-	for (int i= 0, i < B -> length; i++){
-		append (C, current -> value);
+	for (int i= 0; i < B -> length; i++){
+		append (C, current -> data);
 		current = current -> next;
 	}
 	return C;

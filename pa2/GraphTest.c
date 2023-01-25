@@ -9,183 +9,96 @@
 #include<stdlib.h>
 #include<stdbool.h>
 #include"Graph.h"
+#include"List.h"
 
 int main(int argc, char* argv[]){
-	int i;
-	List A = newList();
-	// List B = newList();
+	Graph G = newGraph(6);
+	List L = newList();
 	
-	
-	// Prepend Test
+	// addEdge Test
 	//-----------------------------------------------------------------------------
-	printf("Testing prepend() function of List.c\n");
+	printf("Testing addEdge() function of Graph.c\n");
+	addEdge(G, 5, 4);
+	addEdge(G, 1, 2);
+	addEdge(G, 3, 6);
 	
-	for (i = 10; i >= 1; i--){
-		prepend(A, i);
-		// prepend(B, i);
-	}
-	
-	printf("Printing List A: ");
-	printList(stdout, A);
+	printf("Printing Graph G: ");
+	printGraph(stdout, G);
 	printf("\n");
-	// printf("Printing List B: ");
-	// printList(B);
-	// printf("\n");
 	
-	
-	// Append Test
+	// addArc Test
 	//-----------------------------------------------------------------------------
 	printf("\n");
-	printf("Testing append() function of List.c\n");
-	
-	for (i = 11; i <= 15; i++){
-		append(A, i);
-		// append(B, i);
-	}
-	
-	printf("Printing List A: ");
-	printList(stdout, A);
+	printf("Testing addArc() function of Graph.c\n");
+	Graph H = newGraph(6);
+	addArc(H, 5, 4);
+	addArc(H, 1, 2);
+	addArc(H, 3, 6);
+	printf("Printing Graph H: ");
+	printGraph(stdout, H);
 	printf("\n");
-	// printf("Printing List B: ");
-	// printList(B);
-	// printf("\n");
-	
-	
-	// Copy List Test
+
+	// getOrder Test
 	//-----------------------------------------------------------------------------
 	printf("\n");
-	printf("Testing copyList() function of List.c\n");
-	List B = copyList(A);
-	printList(stdout, B);
+	printf("Testing getOrder() function of Graph.c\n");
+	printf("Printing order of Graph G: %d", getOrder(G));
+	printf("\n");
 	
 	
-	// Equals Test
+	// BFS Test
 	//-----------------------------------------------------------------------------
 	printf("\n");
-	printf("Testing equals() function of List.c\n");
-	equals(A, B);
-	printf("%s", equals(A,B)?"true":"false");
+	printf("Testing BFS() function of Graph.c\n");
+	BFS(G, 3);
+	printGraph(stdout, G);
+	printf("\n");
 	
-	
-	// Length Test
+	// getSize Test
 	//-----------------------------------------------------------------------------
 	printf("\n");
-	printf("Testing length() function of List.c\n");
-	printf("Printing length of List A: ");
-	printf("%d", length(A));
+	printf("Testing getSize() function of Graph.c\n");
+	printf("Printing size of Graph G: %d", getSize(G));
+	printf("\n");
 	
-	
-	// Index, get, and Cursor Movement Tests
+	// getSource Test
 	//-----------------------------------------------------------------------------
 	printf("\n");
-	printf("Testing index(), moveFront, moveBack, movePrev, moveNext and get functions of List.c\n");
-	printf("Printing index of List A before any movement: ");
-	printf("%d", index(A));
-	
+	printf("Testing getSource() function of Graph.c\n");
+	printf("Printing source of Graph G: %d", getSource(G));
 	printf("\n");
-	printf("Printing index of List A at the front of the list: ");
-	moveFront(A);
-	printf("%d", index(A));
-	printf("\nGetting value of index: %d", get(A));
 	
-	printf("\n");
-	printf("Printing index of List A at the back of the list: ");
-	moveBack(A);
-	printf("%d", index(A));
-	printf("\nGetting value of index: %d", get(A));
-	
-	printf("\n");
-	printf("Printing index of List A at the previous index of the list: ");
-	movePrev(A);
-	printf("%d", index(A));
-	printf("\nGetting value of index: %d", get(A));
-	
-	printf("\n");
-	printf("Printing index of List A at the next index of the list: ");
-	moveNext(A);
-	printf("%d", index(A));
-	printf("\nGetting value of index: %d", get(A));
-	
-	printf("\n");
-	printf("Printing index of List A at undefined of the list: ");
-	moveFront(A);
-	movePrev(A);
-	printf("%d\n", index(A));
-	
-	// Front Test
+	// getParent Test
 	//-----------------------------------------------------------------------------
 	printf("\n");
-	printf("Testing front() function of List.c in List A\n");
-	printf("Printing front element of List A: %d", front(A));
-	
-	// Back Test
-	//-----------------------------------------------------------------------------
-	printf("\n");
-	printf("Testing back() function of List.c in List A\n");
-	printf("Printing back element of List A: %d", back(A));
-	
-	// Set Test
-	//-----------------------------------------------------------------------------
-	printf("\n");
-	printf("Testing set() function of List.c by changing first element to 0 in List A\n");
-	moveFront(A);
-	set(A, 0);
-	printList(stdout, A);
+	printf("Testing getParent() function of Graph.c\n");
+	printf("Printing parent of 4 in Graph G: %d", getParent(G, 4));
 	printf("\n");
 	
-	// Clear Test
+	// getDist Test
 	//-----------------------------------------------------------------------------
 	printf("\n");
-	printf("Testing clear() function of List.c by clearing List A\n");
-	clear(A);
-	printf("Adding single item to List A in order to print\n");
-	prepend(A, 1);
-	printList(stdout, A);
+	printf("Testing getDist() function of Graph.c\n");
+	printf("Printing distance of 4 in Graph G: %d", getDist(G, 4));
 	printf("\n");
 	
-	// Delete Test
+	// getPath Test
 	//-----------------------------------------------------------------------------
 	printf("\n");
-	printf("Testing delete() function of List.c by deleting second item in List B\n");
-	moveFront(B);
-	moveNext(B);
-	delete(B);
-	printList(stdout, B);
+	printf("Testing getPath() function of Graph.c\n");
+	printf("Printing path of 4 in Graph G: ");
+	getPath(L, G, 4);
+	printList(stdout, L);
 	printf("\n");
 	
-	// Delete Front Test
+	// makeNull Test
 	//-----------------------------------------------------------------------------
 	printf("\n");
-	printf("Testing deleteFront() function of List.c in List B\n");
-	deleteFront(B);
-	printList(stdout, B);
+	printf("Testing makeNull() function of Graph.c\n");
+	makeNull(G);
+	makeNull(H);
+	printf("Printing size of Graph G: %d", getSize(G));
 	printf("\n");
-	
-	// Delete Back Test
-	//-----------------------------------------------------------------------------
-	printf("\n");
-	printf("Testing deleteBack() function of List.c in List B\n");
-	deleteBack(B);
-	printList(stdout, B);
-	printf("\n");
-	
-	// Insert Before Test
-	//-----------------------------------------------------------------------------
-	printf("\n");
-	printf("Testing insertBefore() function of List.c in List B by adding item in front of second element\n");
-	moveFront(B);
-	moveNext(B);
-	insertBefore(B, 100);
-	printList(stdout, B);
-	printf("\n");
-	
-	// Insert After Test
-	//-----------------------------------------------------------------------------
-	printf("\n");
-	printf("Testing insertAfter() function of List.c in List B by adding item behind of second element\n");
-	moveFront(B);
-	moveNext(B);
-	insertAfter(B, 200);
-	printList(stdout, B);
+	printf("Printing size of Graph H: %d", getSize(H));
 	printf("\n");
 }

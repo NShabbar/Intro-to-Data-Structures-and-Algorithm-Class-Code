@@ -1,12 +1,5 @@
-#------------------------------------------------------------------------------
-#  Graph.c for CMPS 101 Programming Assignment 2
-#
-#                     
-# 
-# 
-#  
-#  
-#------------------------------------------------------------------------------
+// Graph.c for CSE 101 Programming Assignment 2
+
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -98,7 +91,7 @@ int getSource(Graph G){
 		exit(EXIT_FAILURE);
 
 	}
-	if (G -> source = NIL){ // if source is NIL, return NIL.
+	if (G -> source == NIL){ // if source is NIL, return NIL.
 		return NIL;
 	}
 	return G -> source; // just need to return source.
@@ -145,13 +138,12 @@ void getPath(List L, Graph G, int u){
 		append(L, u);
 	}
 	else if ( G -> parent[u] == NIL){ // if parent is NIL, append NIL.
-		fprintf(G, " is not reachable from ", u); // statement stating where pointer is not reachable from.
 		append(L, NIL); // appends NIL.
 	}else{
 		getPath(L, G, G -> parent[u]); // recursive call to get path.
 		append(L, u);
-		}
 	}
+}
 
 /*** Manipulation procedures ***/
 
@@ -170,22 +162,12 @@ void addEdge(Graph G, int u, int v){
 		fprintf(stderr, "Graph Error: calling addEdge on NULL graph pointer.");
 		exit(EXIT_FAILURE);
 	}
-	if ((getOrder(G) < v || v < 1) && (getOrder(G) < u || u <1)){ // checking precondition
+	if ((getOrder(G) < v || v < 1) || (getOrder(G) < u || u <1)){ // checking precondition
 		fprintf(stderr, "Graph Error: calling addEdge on vertex not in range."); // checking precondition
 		exit(EXIT_FAILURE);
 	}
-	if (length(G -> adj[u]) == 0){
-		append(G -> adj[u], v);
-	}
-	moveFront(G -> adj[u]);
-	while (get(G -> adj[u]) != NIL && get(G -> adj[u] < v){
-		moveNext(G -> adj[u]);
-	}
-	if (get(G -> adj[u]) == NIL){
-		append(G -> adj[u], v);
-	}
-	insertBefore(G -> adj[u], v);
-	G -> size++; // Professor mentioned in lecture we needed to do size++ here. I am not too sure why. Need to ask.
+	addArc(G, u, v);
+	addArc(G, v, u);
 }
 
 // Function addArc() inserts a new directed edge from u to v, i.e. v is added to the adjacency 
@@ -195,11 +177,21 @@ void addArc(Graph G, int u, int v){
 		fprintf(stderr, "Graph Error: calling addArc on NULL graph pointer.");
 		exit(EXIT_FAILURE);
 	}
-	if ((getOrder(G) < v || v < 1) && (getOrder(G) < u || u <1)){ // checking precondition
+	if ((getOrder(G) < v || v < 1) || (getOrder(G) < u || u <1)){ // checking precondition
 		fprintf(stderr, "Graph Error: calling addArc on vertex not in range.");
 		exit(EXIT_FAILURE);
 	}
-	append( G -> adj[u], v);
+	if (length(G -> adj[u]) == 0){
+		append(G -> adj[u], v);
+	}
+	moveFront(G -> adj[u]);
+	while (get(G -> adj[u]) != NIL && get(G -> adj[u]) < v){
+		moveNext(G -> adj[u]);
+	}
+	if (get(G -> adj[u]) == NIL){
+		append(G -> adj[u], v);
+	}
+	insertBefore(G -> adj[u], v);
 	G -> size++; // Professor mentioned in lecture we needed to do size++ here. I am not too sure why. Need to ask.
 }
 
@@ -214,30 +206,30 @@ void BFS(Graph G, int s){
 		fprintf(stderr, "Graph Error: calling BFS on vertex not in range.");
 		exit(EXIT_FAILURE);
 	}
-	freeGraph(G); // Professor mentioned needing to clear the tree due to potential garbage so adding this here.
+	makeNull(G); // Professor mentioned needing to clear the tree due to potential garbage so adding this here.
 	G -> source = s; // set source to source since s is source.
 	for (int i = 0; i <= getOrder(G); i++){
-		color[i] = WHITE; // set all adj elements to be WHITE.
-		dist[i] = INF; // set distance to INF.
-		parent[i] = NIL; // set parents to NIL.
+		G -> color[i] = WHITE; // set all adj elements to be WHITE.
+		G -> dist[i] = INF; // set distance to INF.
+		G -> parent[i] = NIL; // set parents to NIL.
 	}
-	color[s] = GRAY; // discover the source, s, color it GRAY.
-	dist[s] = 0; // set distance of source to 0 since there is no path from source to source.
-	parent[s] = NIL; // set parent of source to NIL since source has no parent.
-	List L = newList; // create new list for BFS creation.
+	G -> color[s] = GRAY; // discover the source, s, color it GRAY.
+	G -> dist[s] = 0; // set distance of source to 0 since there is no path from source to source.
+	G -> parent[s] = NIL; // set parent of source to NIL since source has no parent.
+	List L = newList(); // create new list for BFS creation.
 	append(L, s); // add source to graph.
-	while (index(L) != NULL){
+	while (index(L) != NIL){
 		int i = front(L); // get front value.
 		deleteFront(L); // remove front value.
 		for (int j = 0; j <= length(G -> adj[i]); j++){
-			if (color[j] == WHITE){
-				color[j] = GRAY;
-				dist[j] = dist[i] + 1;
-				parent[j] = i;
+			if (G -> color[j] == WHITE){
+				G -> color[j] = GRAY;
+				G -> dist[j] = (G -> dist[i]) + 1;
+				G -> parent[j] = i;
 				append(L, j);
 			}
 		}
-		color[i] = BLACK;
+		G -> color[i] = BLACK;
 	}
 }	
 
@@ -250,9 +242,10 @@ void printGraph(FILE* out, Graph G){
 		fprintf(stderr, "Graph Error: calling printGraph on NULL graph pointer.");
 		exit(EXIT_FAILURE);
 	}
-	for (int i = 0, i <= getOrder(G); i++){
+	for (int i = 0; i <= getOrder(G); i++){
 		fprintf(out, "%d: ", i); //print output for each order.
 		moveFront(G -> adj[i]); // set cursor to front.
+		printList(stdout, G -> adj[i]); // print each list.
 	}
 	fprintf(out, "\n");
 }

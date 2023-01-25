@@ -1,15 +1,9 @@
-#------------------------------------------------------------------------------
-#  Graph.h for CMPS 101 Programming Assignment 2
-#
-#                     
-# 
-# 
-#  
-#  
-#------------------------------------------------------------------------------
+// Graph.h for CMPS 101 Programming Assignment 2
+
 #ifndef GRAPH_H_INCLUDE_
 #define GRAPH_H_INCLUDE_
 #include<stdbool.h>
+#include "List.h"
 
 #define INF -1 // Any negative number works.
 #define NIL -2 // Any negative number works, but must be different than INF.
