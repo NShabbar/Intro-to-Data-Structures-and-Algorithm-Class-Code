@@ -166,12 +166,12 @@ void makeNull(Graph G){
 // Function addEdge() inserts a new edge joining u to v, i.e. u is added to the adjacency 
 // List of v, and v to the adjacency List of u
 void addEdge(Graph G, int u, int v){
-	if (G == NULL){
+	if (G == NULL){ // checking precondition
 		fprintf(stderr, "Graph Error: calling addEdge on NULL graph pointer.");
 		exit(EXIT_FAILURE);
 	}
-	if (getOrder(G) < s || s < 1){
-		fprintf(stderr, "Graph Error: calling addEdge on vertex not in range.");
+	if ((getOrder(G) < v || v < 1) && (getOrder(G) < u || u <1)){ // checking precondition
+		fprintf(stderr, "Graph Error: calling addEdge on vertex not in range."); // checking precondition
 		exit(EXIT_FAILURE);
 	}
 	if (length(G -> adj[u]) == 0){
@@ -185,15 +185,17 @@ void addEdge(Graph G, int u, int v){
 		append(G -> adj[u], v);
 	}
 	insertBefore(G -> adj[u], v);
+	G -> size++; // Professor mentioned in lecture we needed to do size++ here. I am not too sure why. Need to ask.
+}
 
 // Function addArc() inserts a new directed edge from u to v, i.e. v is added to the adjacency 
 // List of u (but not u to the adjacency List of v). 
 void addArc(Graph G, int u, int v){
-	if (G == NULL){
+	if (G == NULL){ // checking precondition
 		fprintf(stderr, "Graph Error: calling addArc on NULL graph pointer.");
 		exit(EXIT_FAILURE);
 	}
-	if (getOrder(G) < s || s < 1){
+	if ((getOrder(G) < v || v < 1) && (getOrder(G) < u || u <1)){ // checking precondition
 		fprintf(stderr, "Graph Error: calling addArc on vertex not in range.");
 		exit(EXIT_FAILURE);
 	}
@@ -237,8 +239,7 @@ void BFS(Graph G, int s){
 		}
 		color[i] = BLACK;
 	}
-}
-	
+}	
 
 /*** Other operations ***/
 
@@ -256,9 +257,3 @@ void printGraph(FILE* out, Graph G){
 	fprintf(out, "\n");
 }
 
-		
-
-	
-	
-	
-	
