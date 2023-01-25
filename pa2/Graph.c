@@ -174,7 +174,16 @@ void addArc(Graph G, int u, int v);
 // Function BFS() runs the BFS algorithm on the Graph G with source s,
 // setting the color, distance, parent, and source fields of G accordingly.
 void BFS(Graph G, int s){
-	for (int i = 0; i < G -> order; i++){
+	if (G == NULL){
+		fprintf(stderr, "Graph Error: calling BFS on NULL graph pointer.");
+		exit(EXIT_FAILURE);
+	}
+	if (getOrder(G) < s || s < 1){
+		fprintf(stderr, "Graph Error: calling BFS on vertex not in range.");
+		exit(EXIT_FAILURE);
+	}
+	G -> source = s; // set source to source since s is source.
+	for (int i = 0; i <= getOrder(G); i++){
 		color[i] = WHITE; // set all adj elements to be WHITE.
 		dist[i] = INF; // set distance to INF.
 		parent[i] = NIL; // set parents to NIL.
@@ -184,9 +193,10 @@ void BFS(Graph G, int s){
 	parent[s] = NIL; // set parent of source to NIL since source has no parent.
 	List L = newList; // create new list for BFS creation.
 	append(L, s); // add source to graph.
-	while (L != NULL){
-		int i = deleteFront(L);
-		for (int j = 0; j <= adj[i]; j++){
+	while (index(L) != NULL){
+		int i = front(L); // get front value.
+		deleteFront(L); // remove front value.
+		for (int j = 0; j <= length(G -> adj[i]); j++){
 			if (color[j] == WHITE){
 				color[j] = GRAY;
 				dist[j] = dist[i] + 1;
