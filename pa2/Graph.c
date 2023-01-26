@@ -38,17 +38,16 @@ Graph newGraph(int n){
 	Graph G = malloc(sizeof(GraphObj)); // assign memory for size of graph G.
 	G -> size = 0; // initialize size to zero since nothing in graph.
 	G -> order = n; // initialize order to n.
-
-	/* G -> color = calloc(n+1, sizeof(int)); // intialize color to 1 more than order.
+	G -> adj = calloc(n+1, sizeof(List)); // allocate space for adj.
+	G -> color = calloc(n+1, sizeof(int)); // intialize color to 1 more than order.
 	G -> parent = calloc(n+1, sizeof(int)); // initialize parent to 1 more than order.
 	G -> dist = calloc(n+1, sizeof(int)); // initialize distance to 1 more than order.
-	G -> source = NIL; // intialize source to a value below zero. */
-	for (int i = 0; i < n+1; i++){
+	G -> source = NIL; // intialize source to a value below zero.
+	for (int i = 0; i < n; i++){
 		G -> adj[i] = newList(); // create list for each adjacent element.
 		G -> parent[i] = NIL; // NIL because DNE yet.
 		G -> dist[i] = INF; // infinity because there is no path yet.
 		G -> color[i] = WHITE;
-		G -> source[i] = NIL;
 	}
 	return G; // return graph.
 }
@@ -57,13 +56,13 @@ Graph newGraph(int n){
 // then sets the handle *pG to NULL.
 void freeGraph(Graph* pG){
 	Graph G = *pG; // pointer to G.
-	for (int i = 0; i <= G -> order; i++){
+	for (int i = 0; i <= getOrder(G); i++){
 		freeList(&(G -> adj[i])); // since each element is a list of adjacent lists, need to free each list.
-	}
-	free(G -> color); // free color node.
-	free(G -> parent); // free parent node.
-	free(G -> dist); // free distance node.
-	*pG = NULL; // set pG to NULL.
+		free(G -> color); // free color node.
+		free(G -> parent); // free parent node.
+		free(G -> dist); // free distance node.
+		*pG = NULL; // set pG to NULL.
+	}	
 }
 
 /*** Access functions ***/
@@ -161,6 +160,47 @@ void makeNull(Graph G){
 	G -> size = 0; // set size to zero, since graph should be empty.
 }
 
+/* // Function addEdge() inserts a new edge joining u to v, i.e. u is added to the adjacency 
+// List of v, and v to the adjacency List of u
+void addEdge(Graph G, int u, int v){
+	if (G == NULL){ // checking precondition
+		fprintf(stderr, "Graph Error: calling addEdge on NULL graph pointer.");
+		exit(EXIT_FAILURE);
+	}
+	if ((getOrder(G) < v || v < 1) && (getOrder(G) < u || u <1)){ // checking precondition
+		fprintf(stderr, "Graph Error: calling addEdge on vertex not in range."); // checking precondition
+		exit(EXIT_FAILURE);
+	}
+	if (length(G -> adj[u]) == 0){
+		append(G -> adj[u], v);
+		append(G -> adj[v], u);
+	}
+	moveFront(G -> adj[u]);
+	while (get(G -> adj[u]) != NIL && get(G -> adj[u] < v)){
+		moveNext(G -> adj[u]);
+	}
+	if (get(G -> adj[u]) == NIL){
+		append(G -> adj[u], v);
+		append(G -> adj[v], u);
+	}
+	insertBefore(G -> adj[u], v);
+	G -> size++; // Professor mentioned in lecture we needed to do size++ here. I am not too sure why. Need to ask.
+}
+
+// Function addArc() inserts a new directed edge from u to v, i.e. v is added to the adjacency 
+// List of u (but not u to the adjacency List of v). 
+void addArc(Graph G, int u, int v){
+	if (G == NULL){ // checking precondition
+		fprintf(stderr, "Graph Error: calling addArc on NULL graph pointer.");
+		exit(EXIT_FAILURE);
+	}
+	if ((getOrder(G) < v || v < 1) && (getOrder(G) < u || u <1)){ // checking precondition
+		fprintf(stderr, "Graph Error: calling addArc on vertex not in range.");
+		exit(EXIT_FAILURE);
+	}
+	append( G -> adj[u], v);
+	G -> size++; // Professor mentioned in lecture we needed to do size++ here. I am not too sure why. Need to ask.
+} */
 // Function addEdge() inserts a new edge joining u to v, i.e. u is added to the adjacency 
 // List of v, and v to the adjacency List of u
 void addEdge(Graph G, int u, int v){
@@ -172,8 +212,11 @@ void addEdge(Graph G, int u, int v){
 		fprintf(stderr, "Graph Error: calling addEdge on vertex not in range."); // checking precondition
 		exit(EXIT_FAILURE);
 	}
-	addArc(G, u, v);
-	addArc(G, v, u);
+	if ( u != v){
+		addArc(G, u, v);
+		addArc(G, v, u);
+		G -> size--;
+	}
 }
 
 // Function addArc() inserts a new directed edge from u to v, i.e. v is added to the adjacency 
@@ -195,7 +238,7 @@ void addArc(Graph G, int u, int v){
 		moveNext(G -> adj[u]);
 	}
 	if (get(G -> adj[u]) == NIL){
-		append(G -> adj[u], v);
+		append(G -> adj[u], NIL);
 	}
 	insertBefore(G -> adj[u], v);
 	G -> size++; // Professor mentioned in lecture we needed to do size++ here. I am not too sure why. Need to ask.
