@@ -14,7 +14,7 @@
 int main(int argc, char* argv[]){
 	Graph G = newGraph(6);
 	List L = newList();
-	
+
 	// addEdge Test
 	//-----------------------------------------------------------------------------
 	printf("Testing addEdge() function of Graph.c\n");

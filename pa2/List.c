@@ -463,7 +463,7 @@ void printList(FILE* out, List L){
 		exit(EXIT_FAILURE);
 	}
 	for (N = L -> front; N != NULL; N = N -> next){
-		printf("%d ", N -> data);
+		fprintf(out, "%d ", N -> data);
 	}
 	printf("\n");
 }

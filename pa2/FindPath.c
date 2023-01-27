@@ -39,45 +39,38 @@ int main(int argc, char * argv[]){
 		printf("Unable to open file %s for writing\n", argv[2]);
 		exit(1);
 	}
-	int n, edge1, edge2;
+	int n, vertex1, vertex2;
 	fscanf(in, " %d", &n); // scanning for n size.
 	Graph G = newGraph(n); // create a new graph with size n.
-	List dist = newList();
-	List source = newList();
 	List path = newList();
-	fscanf(in, " %d", &edge1); // add an edge arg.
-	fscanf(in, " %d", &edge2); // add a second edge arg.
-	while (edge1 != 0 && edge2 != 0){
-		addEdge(G, edge1, edge2);
-		append(source, edge1);
-		append(dist, edge2);
-		fscanf(in, " %d", edge1); // add an edge arg.
-		fscanf(in, " %d", &edge2); // add a second edge arg.
+	fscanf(in, "%d %d", &vertex1, &vertex2);
+	while (vertex1 != 0 && vertex2 != 0){
+		addEdge(G, vertex1, vertex2);
+		//fscanf(in, " %d", &edge1); // add an edge arg.
+		//fscanf(in, " %d", &edge2); // add a second edge arg.
+		fscanf(in, "%d %d", &vertex1, &vertex2);
 	}
 	printGraph(out, G);
-	while (length(source) != 0){
+	fscanf(in, "%d %d", &vertex1, &vertex2);
+	while (vertex1 != 0 && vertex2 != 0){
 		fprintf(out, "\n");
-		edge1 = front(source);
-		deleteFront(source);
-		edge2 = front(dist);
-		deleteFront(dist);
-		BFS(G, edge1);
+		BFS(G, vertex1);
 		clear(path);
-		getPath(path, G, edge2);
+		getPath(path, G, vertex2);
+		
 		if (front(path) == NIL){
-			fprintf(out, "No path from %d to %d exists\n", edge1, edge2);
-			fprintf(out, "The distance from %d to %d is therefore infinity\n", edge1, edge2);
+			fprintf(out, "The distance from %d to %d is infinity\n", vertex1, vertex2);
+			fprintf(out, "No %d-%d path exists\n", vertex1, vertex2);
 		}else{
-			fprintf(out, "The distance from %d to %d is %d\n", edge1, edge2, getDist(G, edge2));
-			fprintf(out, "A shortest path from %d to %d is: ", edge1, edge2);
+			fprintf(out, "The distance from %d to %d is %d\n", vertex1, vertex2, getDist(G, vertex2));
+			fprintf(out, "A shortest %d-%d path is: ", vertex1, vertex2);
 			printList(out, path);
 			fprintf(out, "\n");
 		}
+		fscanf(in, "%d %d", &vertex1, &vertex2);
 	} 
 	freeGraph(&G); // free graph memory.
 	freeList(&path); // free path list.
-	freeList(&source); // free first edge list.
-	freeList(&dist); // free second edge list.
 	fclose(in); // close the in file.
 	fclose(out); // close the out file.
 	return(0);
