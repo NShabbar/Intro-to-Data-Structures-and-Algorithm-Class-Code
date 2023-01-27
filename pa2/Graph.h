@@ -1,5 +1,10 @@
-// Graph.h for CMPS 101 Programming Assignment 2
-
+//-----------------------------------------------------------------------------
+// Nadia Shabbar
+// nshabbar
+// pa2
+// Graph.h
+// Header file for Graph.c.
+//-----------------------------------------------------------------------------
 #ifndef GRAPH_H_INCLUDE_
 #define GRAPH_H_INCLUDE_
 #include<stdbool.h>

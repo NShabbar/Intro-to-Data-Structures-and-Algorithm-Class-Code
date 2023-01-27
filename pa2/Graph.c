@@ -1,6 +1,10 @@
-// Graph.c for CSE 101 Programming Assignment 2
-
-
+//-----------------------------------------------------------------------------
+// Nadia Shabbar
+// nshabbar
+// pa2
+// Graph.c
+// Implementation file for Graph.
+//-----------------------------------------------------------------------------
 #include<stdio.h>
 #include<stdlib.h>
 #include<assert.h>
