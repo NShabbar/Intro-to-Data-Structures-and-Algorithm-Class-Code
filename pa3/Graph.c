@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // Nadia Shabbar
 // nshabbar
-// pa2
+// pa3
 // Graph.c
 // Implementation file for Graph.
 //-----------------------------------------------------------------------------
@@ -25,6 +25,8 @@ typedef struct GraphObj{
 	int *color; // Color of Node.
 	int *parent; // Parent of next Node.
 	int *dist; // Distance.
+	int *discover // Discover time.
+	int *finish // Finish time.
 	int size; // Number of Edges.
 	int order; // Number of Vertices.
 	int source; // Label for Vertex most recently used.
@@ -46,12 +48,19 @@ Graph newGraph(int n){
 	G -> color = calloc(n+1, sizeof(int)); // intialize color to 1 more than order.
 	G -> parent = calloc(n+1, sizeof(int)); // initialize parent to 1 more than order.
 	G -> dist = calloc(n+1, sizeof(int)); // initialize distance to 1 more than order.
+	G -> discover = calloc(n+1, sizeof(int)); // initialize discover to 1 more than order.
+	G -> finish = calloc(n+1, sizeof(int)); // initialize finish time to 1 more than order.
 	G -> source = NIL; // intialize source to a value below zero.
+	
+	// the point of doing n+1 is to waste the first slot, something the professor mentioned
+	// was recommended to do.
 	for (int i = 0; i < n+1; i++){
 		G -> adj[i] = newList(); // create list for each adjacent element.
 		G -> parent[i] = NIL; // NIL because DNE yet.
 		G -> dist[i] = INF; // infinity because there is no path yet.
-		G -> color[i] = WHITE;
+		G -> discover[i] = UNDEF; // discover is undefined if DFS is not run.
+		G -> finish[i] = UNDEF; // finish is undefined if DFS is not run.
+		G -> color[i] = WHITE; // White stands for initial state of color before discovery and before DFS or BFS run.
 	}
 	return G; // return graph.
 }
@@ -71,6 +80,10 @@ void freeGraph(Graph* pG){
 		(*pG) -> parent = NULL;
 		free(((*pG) -> dist)); // free distance node.
 		(*pG) -> dist = NULL;
+		free(((*pG) -> discover)); // free discover node.
+		(*pG) -> discover = NULL;
+		free(((*pG) -> finish)); // free finish node.
+		(*pG) -> finish = NULL;
 		free(*pG);
 		(*pG) = NULL; // set pG to NULL.
 	}		
@@ -124,6 +137,34 @@ int getParent(Graph G, int u){
 		return NIL;
 	}
 	return G -> parent[u]; // returns parent at int u.
+}
+
+// Function getDiscover() will return the discover time of u in the DFS tree
+// created by DFS(), or UNDEF if DFS() has not yet been called
+int getDiscover(Graph G, int u){
+	if (G == NULL){
+		fprintf(stderr, "Graph Error: calling getSource on NULL graph pointer.");
+		exit(EXIT_FAILURE);
+	}
+	if ( u < 1 || getOrder(G) < u){
+		fprintf(stderr, "Graph Error: calling getDiscover on vertex not in range\n");
+		exit(EXIT_FAILURE);
+	}
+	return G -> discover[u];
+}
+
+// Function getFinish() will return the finish time of u in the DFS tree
+// created by DFS(), or UNDEF if DFS() has not yet been called
+int getFinish(Graph G, int u){
+	if (G == NULL){
+		fprintf(stderr, "Graph Error: calling getSource on NULL graph pointer.");
+		exit(EXIT_FAILURE);
+	}
+	if ( u < 1 || getOrder(G) < u){
+		fprintf(stderr, "Graph Error: calling getFinish on vertex not in range\n");
+		exit(EXIT_FAILURE);
+	}
+	return G -> finish[u];
 }
 
 // Function getDist() returns the distance from
@@ -182,47 +223,6 @@ void makeNull(Graph G){
 	G -> size = 0; // set size to zero, since graph should be empty.
 }
 
-/* // Function addEdge() inserts a new edge joining u to v, i.e. u is added to the adjacency 
-// List of v, and v to the adjacency List of u
-void addEdge(Graph G, int u, int v){
-	if (G == NULL){ // checking precondition
-		fprintf(stderr, "Graph Error: calling addEdge on NULL graph pointer.");
-		exit(EXIT_FAILURE);
-	}
-	if ((getOrder(G) < v || v < 1) && (getOrder(G) < u || u <1)){ // checking precondition
-		fprintf(stderr, "Graph Error: calling addEdge on vertex not in range."); // checking precondition
-		exit(EXIT_FAILURE);
-	}
-	if (length(G -> adj[u]) == 0){
-		append(G -> adj[u], v);
-		append(G -> adj[v], u);
-	}
-	moveFront(G -> adj[u]);
-	while (get(G -> adj[u]) != NIL && get(G -> adj[u] < v)){
-		moveNext(G -> adj[u]);
-	}
-	if (get(G -> adj[u]) == NIL){
-		append(G -> adj[u], v);
-		append(G -> adj[v], u);
-	}
-	insertBefore(G -> adj[u], v);
-	G -> size++; // Professor mentioned in lecture we needed to do size++ here. I am not too sure why. Need to ask.
-}
-
-// Function addArc() inserts a new directed edge from u to v, i.e. v is added to the adjacency 
-// List of u (but not u to the adjacency List of v). 
-void addArc(Graph G, int u, int v){
-	if (G == NULL){ // checking precondition
-		fprintf(stderr, "Graph Error: calling addArc on NULL graph pointer.");
-		exit(EXIT_FAILURE);
-	}
-	if ((getOrder(G) < v || v < 1) && (getOrder(G) < u || u <1)){ // checking precondition
-		fprintf(stderr, "Graph Error: calling addArc on vertex not in range.");
-		exit(EXIT_FAILURE);
-	}
-	append( G -> adj[u], v);
-	G -> size++; // Professor mentioned in lecture we needed to do size++ here. I am not too sure why. Need to ask.
-} */
 // Function addEdge() inserts a new edge joining u to v, i.e. u is added to the adjacency 
 // List of v, and v to the adjacency List of u
 void addEdge(Graph G, int u, int v){
@@ -315,7 +315,17 @@ void BFS(Graph G, int s){
 	freeList(&L);
 }	
 
+// Function DFS() runs the DFS algorithm on the Graph G with list s,
+// setting the color, distance, parent, and source fields of G accordingly.
+void DFS(Graph G, List S);
+
 /*** Other operations ***/
+
+// Function transpose() returns a reference to a new graph object representing the transpose of G
+Graph transpose(Graph G);
+
+// copyGraph() returns a reference to a new graph that is a copy of G.
+Graph copyGraph(Graph G);
 
 // Finally, function printGraph() prints the adjacency list representation of G to the file 
 // pointed to by out.
