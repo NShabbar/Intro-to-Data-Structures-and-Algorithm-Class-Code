@@ -24,8 +24,9 @@ typedef struct GraphObj{
 	List *adj; // Added this because this is for adjacents.
 	int *color; // Color of Node.
 	int *parent; // Parent of next Node.
-	int *discover // Discover time.
-	int *finish // Finish time.
+	int *discover; // Discover time.
+	int *finish; // Finish time.
+	int time; // time for DFS
 	int size; // Number of Edges.
 	int order; // Number of Vertices.
 } GraphObj;
@@ -40,6 +41,7 @@ Graph newGraph(int n){
 		exit(EXIT_FAILURE);
 	}
 	Graph G = malloc(sizeof(GraphObj)); // assign memory for size of graph G.
+	G -> time = 0; // initialize time to 0.
 	G -> size = 0; // initialize size to zero since nothing in graph.
 	G -> order = n; // initialize order to n.
 	G -> adj = calloc(n+1, sizeof(List)); // allocate space for adj.
@@ -73,8 +75,6 @@ void freeGraph(Graph* pG){
 		(*pG) -> color = NULL;
 		free(((*pG) -> parent)); // free parent node.
 		(*pG) -> parent = NULL;
-		free(((*pG) -> dist)); // free distance node.
-		(*pG) -> dist = NULL;
 		free(((*pG) -> discover)); // free discover node.
 		(*pG) -> discover = NULL;
 		free(((*pG) -> finish)); // free finish node.
@@ -177,11 +177,11 @@ void addArc(Graph G, int u, int v){
 		fprintf(stderr, "Graph Error: calling addArc on vertex not in range.");
 		exit(EXIT_FAILURE);
 	}
-	if (length(G -> adj[u]) == 0){ // if empty then just add arc.
+	/* if (length(G -> adj[u]) == 0){ // if empty then just add arc.
 		append(G -> adj[u], v);
 		G -> size++;
 		return;
-	}
+	} */
 	//while (index(G -> adj[u]) != NIL && get(G -> adj[u]) < v){
 	moveFront(G->adj[u]); // set to front of list.
 	while(index(G -> adj[u]) != -1){
@@ -190,30 +190,42 @@ void addArc(Graph G, int u, int v){
 		}
 		else if (v < get(G -> adj[u])){
 			insertBefore(G -> adj[u], v);
+			G -> size++;
+			break;
+		}else{
 			break;
 		}
+		/* else if (v == get(G -> adj[u])){
+			break;
+		} */
 	} // ends the sorting.
 	if (index(G -> adj[u]) == -1){ // appends to empty list.
 		append(G -> adj[u], v);
+		G -> size++;
 	}
-	G -> size++; // Professor mentioned in lecture we needed to do size++ here. I am not too sure why. Need to ask.
+	//G -> size++;
 }
 
 // Function Visit()
 // Helper function for DFS.
-void Visit(Graph G, int x, int time){
-	G -> discover[x] = time++;
-	G -> color[x] = GRAY;
-	moveFront(G -> adj[x]);
-	for (int y = 1; y <= getOrder(G -> adj[x]); y++){
-		if (color[y] == WHITE){
-			G -> parent[y] = x;
-			Visit(G, y, time);
+void Visit(Graph G, List L, int x){
+	if ( G -> color[x] != BLACK){
+		G -> discover[x] = ++(G -> time);
+		G -> color[x] = GRAY;
+		moveFront(G -> adj[x]);
+		while(index(G -> adj[x]) >= 0){
+		//for (moveFront(G -> adj[x]); index(G -> adj[x]) != -1; moveNext(G -> adj[x])){
+			int y = get(G -> adj[x]);
+			if (G -> color[y] == WHITE){
+				G -> parent[y] = x;
+				Visit(G, L, y);
+			}
+			moveNext(G -> adj[x]);
 		}
-		moveNext(G -> adj[x]);
-	}
 	G -> color[x] = BLACK;
-	G -> finish[x] = time++;
+	prepend(L, x);
+	G -> finish[x] = ++(G -> time);
+	}
 }
 
 // Function DFS() runs the DFS algorithm on the Graph G with list s,
@@ -230,11 +242,26 @@ void DFS(Graph G, List S){
 	for (int x = 1; x <= getOrder(G); x++){
 		G -> color[x] = WHITE;
 		G -> parent[x] = NIL;
-	int time = 0;
-	for (int x = 1; x <= getOrder(G); x++){
-		if (G -> color[x] == WHITE){
-			Visit(x);
-	}		
+	}
+	G -> time = 0;
+	List stacked = newList();
+	//int* time = 0;
+	for (moveFront(S); index(S) != -1; moveNext(S)){
+		int y = get(S);
+		if (G -> color[y] == WHITE){
+			//Visit(G, S, y);
+			Visit(G, stacked, y);
+		}
+	}
+	clear(S);
+	for (moveFront(stacked); index(stacked) != -1; moveNext(stacked)){
+		int j = get(stacked);
+		append(S, j);
+	}
+	freeList(&stacked);
+	/* for (int i = 0; i  < getOrder(G); i++){
+		deleteBack(S);
+	} */
 }
 
 /*** Other operations ***/
@@ -264,7 +291,7 @@ Graph copyGraph(Graph G){
 		exit(EXIT_FAILURE);
 	}
 	Graph copycat = newGraph(getOrder(G));
-	for (int i = 0, i <= getOrder(G); i++){
+	for (int i = 0; i <= getOrder(G); i++){
 		moveFront(G -> adj[i]);
 		while(get(G -> adj[i]) != -1){
 			addArc(copycat, i, get(G -> adj[i]));

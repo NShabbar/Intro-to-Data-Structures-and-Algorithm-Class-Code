@@ -61,7 +61,7 @@ void addArc(Graph G, int u, int v);
 
 // Function Visit()
 // Helper function for DFS.
-void Visit(int x);
+void Visit(Graph G, List L, int x);
 
 // Function DFS() runs the DFS algorithm on the Graph G with list s,
 // setting the color, distance, parent, and source fields of G accordingly.

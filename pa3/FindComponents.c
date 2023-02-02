@@ -39,12 +39,12 @@ int main(int argc, char * argv[]){
 		printf("Unable to open file %s for writing\n", argv[2]);
 		exit(1);
 	}
-	int n, vertex1, vertex2;
+	/* int n, vertex1, vertex2;
 	fscanf(in, " %d", &n); // scanning for n size.
 	Graph G = newGraph(n); // create a new graph with size n.
 	List path = newList();
-	fscanf(in, "%d %d", &vertex1, &vertex2);
-	while (vertex1 != 0 && vertex2 != 0){
+	fscanf(in, "%d %d", &vertex1, &vertex2); */
+/* 	while (vertex1 != 0 && vertex2 != 0){
 		addEdge(G, vertex1, vertex2);
 		//fscanf(in, " %d", &edge1); // add an edge arg.
 		//fscanf(in, " %d", &edge2); // add a second edge arg.
@@ -72,6 +72,6 @@ int main(int argc, char * argv[]){
 	freeGraph(&G); // free graph memory.
 	freeList(&path); // free path list.
 	fclose(in); // close the in file.
-	fclose(out); // close the out file.
+	fclose(out); // close the out file. */
 	return(0);
 }
