@@ -36,10 +36,6 @@ int getOrder(Graph G);
 // Functions getSize() return the corresponding field values
 int getSize(Graph G);
 
-// getSource() returns the source vertex most recently used in function BFS(), or NIL if
-// BFS() has not yet been called.
-int getSource(Graph G);
-
 // Function getParent() will return the parent of vertex u in the BFS tree
 // created by BFS(), or NIL if BFS() has not yet been called
 int getParent(Graph G, int u);
@@ -52,18 +48,8 @@ int getDiscover(Graph G, int u);
 // created by DFS(), or UNDEF if DFS() has not yet been called
 int getFinish(Graph G, int u);
 
-// Function getDist() returns the distance from
-// the most recent BFS source to vertex u, or INF if BFS() has not yet been called.
-int getDist(Graph G, int u);
-
-//Function getPath() appends to the List L the vertices of a shortest path in G from 
-// source to u, or appends to L the value NIL if no such path exists.
-void getPath(List L, Graph G, int u);
 
 /*** Manipulation procedures ***/
-
-// Function makeNull() deletes all edges of G, restoring it to its original (no edge) state.
-void makeNull(Graph G);
 
 // Function addEdge() inserts a new edge joining u to v, i.e. u is added to the adjacency 
 // List of v, and v to the adjacency List of u
@@ -73,9 +59,9 @@ void addEdge(Graph G, int u, int v);
 // List of u (but not u to the adjacency List of v). 
 void addArc(Graph G, int u, int v);
 
-// Function BFS() runs the BFS algorithm on the Graph G with source s,
-// setting the color, distance, parent, and source fields of G accordingly.
-void BFS(Graph G, int s);
+// Function Visit()
+// Helper function for DFS.
+void Visit(int x);
 
 // Function DFS() runs the DFS algorithm on the Graph G with list s,
 // setting the color, distance, parent, and source fields of G accordingly.

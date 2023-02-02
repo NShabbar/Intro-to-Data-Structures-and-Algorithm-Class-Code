@@ -24,12 +24,10 @@ typedef struct GraphObj{
 	List *adj; // Added this because this is for adjacents.
 	int *color; // Color of Node.
 	int *parent; // Parent of next Node.
-	int *dist; // Distance.
 	int *discover // Discover time.
 	int *finish // Finish time.
 	int size; // Number of Edges.
 	int order; // Number of Vertices.
-	int source; // Label for Vertex most recently used.
 } GraphObj;
 
 /*** Constructors-Destructors ***/
@@ -47,17 +45,14 @@ Graph newGraph(int n){
 	G -> adj = calloc(n+1, sizeof(List)); // allocate space for adj.
 	G -> color = calloc(n+1, sizeof(int)); // intialize color to 1 more than order.
 	G -> parent = calloc(n+1, sizeof(int)); // initialize parent to 1 more than order.
-	G -> dist = calloc(n+1, sizeof(int)); // initialize distance to 1 more than order.
 	G -> discover = calloc(n+1, sizeof(int)); // initialize discover to 1 more than order.
 	G -> finish = calloc(n+1, sizeof(int)); // initialize finish time to 1 more than order.
-	G -> source = NIL; // intialize source to a value below zero.
 	
 	// the point of doing n+1 is to waste the first slot, something the professor mentioned
 	// was recommended to do.
 	for (int i = 0; i < n+1; i++){
 		G -> adj[i] = newList(); // create list for each adjacent element.
 		G -> parent[i] = NIL; // NIL because DNE yet.
-		G -> dist[i] = INF; // infinity because there is no path yet.
 		G -> discover[i] = UNDEF; // discover is undefined if DFS is not run.
 		G -> finish[i] = UNDEF; // finish is undefined if DFS is not run.
 		G -> color[i] = WHITE; // White stands for initial state of color before discovery and before DFS or BFS run.
@@ -109,21 +104,8 @@ int getSize(Graph G){
 	return G -> size; // just need to return size.
 }
 
-// getSource() returns the source vertex most recently used in function BFS(), or NIL if
-// BFS() has not yet been called.
-int getSource(Graph G){
-	if (G == NULL){
-		fprintf(stderr, "Graph Error: calling getSource on NULL graph pointer.");
-		exit(EXIT_FAILURE);
-	}
-	if (G -> source == NIL){ // if source is NIL, return NIL.
-		return NIL;
-	}
-	return G -> source; // just need to return source.
-}
-
-// Function getParent() will return the parent of vertex u in the BFS tree
-// created by BFS(), or NIL if BFS() has not yet been called
+// Function getParent() will return the parent of vertex u in the DFS tree
+// created by DFS(), or NIL if DFS() has not yet been called
 int getParent(Graph G, int u){
 	if (G == NULL){
 		fprintf(stderr, "Graph Error: calling getParent on NULL graph pointer.");
@@ -132,9 +114,6 @@ int getParent(Graph G, int u){
 	if ( u < 1 || getOrder(G) < u){
 		fprintf(stderr, "Graph Error: calling getParent on vertex not in range\n");
 		exit(EXIT_FAILURE);
-	}
-	if (getSource(G) == NIL){ // check for if source is NIL because no parent yet created.
-		return NIL;
 	}
 	return G -> parent[u]; // returns parent at int u.
 }
@@ -167,61 +146,7 @@ int getFinish(Graph G, int u){
 	return G -> finish[u];
 }
 
-// Function getDist() returns the distance from
-// the most recent BFS source to vertex u, or INF if BFS() has not yet been called.
-int getDist(Graph G, int u){
-	if (G == NULL){
-		fprintf(stderr, "Graph Error: calling getDist on NULL graph pointer.");
-		exit(EXIT_FAILURE);
-	}
-	if ( u < 1 || getOrder(G) < u){
-		fprintf(stderr, "Graph Error: calling getDist on vertex not in range\n");
-		exit(EXIT_FAILURE);
-	}
-	if (getSource(G) == NIL){ // checks for if source is NIL no path available so no distance.
-		return INF;
-	}
-	return G -> dist[u]; // returns distance of path to int u.
-}
-
-//Function getPath() appends to the List L the vertices of a shortest path in G from 
-// source to u, or appends to L the value NIL if no such path exists.
-void getPath(List L, Graph G, int u){
-	if (G == NULL){
-		fprintf(stderr, "Graph Error: calling getPath on NULL graph pointer.");
-		exit(EXIT_FAILURE);
-	}
-	if (getSource(G) == NIL){ // checks for if source is NIL because if it is, then there is no path.
-		fprintf(stderr, "Graph Error: calling getPath when Breadth First Search has not been done\n");
-		exit(EXIT_FAILURE);
-	}
-	if ( u < 1 || getOrder(G) < u){
-		fprintf(stderr, "Graph Error: calling getDist on vertex not in range\n");
-		exit(EXIT_FAILURE);
-	}
-	if (getSource(G) == u){ // append element if source is equal to that element.
-		append(L, u);
-	}
-	else if (getParent(G, u) == NIL){ // if parent is NIL, append NIL.
-		append(L, NIL); // appends NIL.
-	}else{
-		getPath(L, G, getParent(G, u)); // recursive call to get path.
-		append(L, u);
-	}
-}
-
 /*** Manipulation procedures ***/
-
-// Function makeNull() deletes all edges of G, restoring it to its original (no edge) state.
-void makeNull(Graph G){
-	for (int i = 0; i < getOrder(G); i++){ // iterate through the order of graph.
-		clear(G -> adj[i]); // clear adj lists per order as it iterates.
-		G -> color[i] = WHITE;
-		G -> parent[i] = NIL;
-		G -> dist[i] = INF;
-	}
-	G -> size = 0; // set size to zero, since graph should be empty.
-}
 
 // Function addEdge() inserts a new edge joining u to v, i.e. u is added to the adjacency 
 // List of v, and v to the adjacency List of u
@@ -274,58 +199,80 @@ void addArc(Graph G, int u, int v){
 	G -> size++; // Professor mentioned in lecture we needed to do size++ here. I am not too sure why. Need to ask.
 }
 
-// Function BFS() runs the BFS algorithm on the Graph G with source s,
-// setting the color, distance, parent, and source fields of G accordingly.
-void BFS(Graph G, int s){
-	if (G == NULL){
-		fprintf(stderr, "Graph Error: calling BFS on NULL graph pointer.");
-		exit(EXIT_FAILURE);
-	}
-	if (getOrder(G) < s || s < 1){
-		fprintf(stderr, "Graph Error: calling BFS on vertex not in range.");
-		exit(EXIT_FAILURE);
-	}
-	G -> source = s; // set source to source since s is source.
-	for (int i = 1; i <= getOrder(G); i++){
-		G -> color[i] = WHITE; // set all adj elements to be WHITE.
-		G -> dist[i] = INF; // set distance to INF.
-		G -> parent[i] = NIL; // set parents to NIL.
-	}
-	G -> color[s] = GRAY; // discover the source, s, color it GRAY.
-	G -> dist[s] = 0; // set distance of source to 0 since there is no path from source to source.
-	G -> parent[s] = NIL; // set parent of source to NIL since source has no parent.
-	List L = newList(); // create new list for BFS creation.
-	append(L, s); // add source to graph.
-	while (length(L) != 0){
-		int x = front(L); // get front value.
-		deleteFront(L); // remove front value.
-		if(length(G -> adj[x]) != 0){		
-			for (moveFront(G -> adj[x]); index(G -> adj[x]) != -1; moveNext(G -> adj[x])){
-				int j = get(G -> adj[x]);
-				if (G -> color[j] == WHITE){
-					G -> color[j] = GRAY;
-					G -> dist[j] = G -> dist[x] + 1;
-					G -> parent[j] = x;
-					append(L, j);
-				}
-			}
+// Function Visit()
+// Helper function for DFS.
+void Visit(Graph G, int x, int time){
+	G -> discover[x] = time++;
+	G -> color[x] = GRAY;
+	moveFront(G -> adj[x]);
+	for (int y = 1; y <= getOrder(G -> adj[x]); y++){
+		if (color[y] == WHITE){
+			G -> parent[y] = x;
+			Visit(G, y, time);
 		}
-		G -> color[x] = BLACK;
+		moveNext(G -> adj[x]);
 	}
-	freeList(&L);
-}	
+	G -> color[x] = BLACK;
+	G -> finish[x] = time++;
+}
 
 // Function DFS() runs the DFS algorithm on the Graph G with list s,
 // setting the color, distance, parent, and source fields of G accordingly.
-void DFS(Graph G, List S);
+void DFS(Graph G, List S){
+	if (G == NULL){
+		fprintf(stderr, "Graph Error: calling DFS on NULL graph pointer.");
+		exit(EXIT_FAILURE);
+	}
+	if (length(S) != getOrder(G)){
+		fprintf(stderr, "Graph Error: calling DFS on list and graph not of equal length.");
+		exit(EXIT_FAILURE);
+	}
+	for (int x = 1; x <= getOrder(G); x++){
+		G -> color[x] = WHITE;
+		G -> parent[x] = NIL;
+	int time = 0;
+	for (int x = 1; x <= getOrder(G); x++){
+		if (G -> color[x] == WHITE){
+			Visit(x);
+	}		
+}
 
 /*** Other operations ***/
 
 // Function transpose() returns a reference to a new graph object representing the transpose of G
-Graph transpose(Graph G);
+Graph transpose(Graph G){
+	if (G == NULL){
+		fprintf(stderr, "Graph Error: calling transpose on NULL graph pointer.");
+		exit(EXIT_FAILURE);
+	}
+	Graph t_pose = newGraph(getOrder(G));
+	for (int i = 0; i <= getOrder(G); i++){
+		List t_list = G -> adj[i];
+		moveFront(t_list);
+		while (get(t_list) != -1){
+			addArc(t_pose, get(t_list), i);
+			moveNext(t_list);
+		}
+	}
+	return t_pose;
+}
 
 // copyGraph() returns a reference to a new graph that is a copy of G.
-Graph copyGraph(Graph G);
+Graph copyGraph(Graph G){
+	if (G == NULL){
+		fprintf(stderr, "Graph Error: calling copyGraph on NULL graph pointer.");
+		exit(EXIT_FAILURE);
+	}
+	Graph copycat = newGraph(getOrder(G));
+	for (int i = 0, i <= getOrder(G); i++){
+		moveFront(G -> adj[i]);
+		while(get(G -> adj[i]) != -1){
+			addArc(copycat, i, get(G -> adj[i]));
+			moveNext(G -> adj[i]);
+		}
+	}
+	return copycat;
+}
 
 // Finally, function printGraph() prints the adjacency list representation of G to the file 
 // pointed to by out.
