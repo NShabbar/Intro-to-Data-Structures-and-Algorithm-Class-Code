@@ -276,7 +276,7 @@ Graph transpose(Graph G){
 	for (int i = 0; i <= getOrder(G); i++){
 		List t_list = G -> adj[i];
 		moveFront(t_list);
-		while (get(t_list) != -1){
+		while (index(t_list) != -1){
 			addArc(t_pose, get(t_list), i);
 			moveNext(t_list);
 		}
@@ -293,7 +293,7 @@ Graph copyGraph(Graph G){
 	Graph copycat = newGraph(getOrder(G));
 	for (int i = 0; i <= getOrder(G); i++){
 		moveFront(G -> adj[i]);
-		while(get(G -> adj[i]) != -1){
+		while(index(G -> adj[i]) != -1){
 			addArc(copycat, i, get(G -> adj[i]));
 			moveNext(G -> adj[i]);
 		}
@@ -319,4 +319,3 @@ void printGraph(FILE* out, Graph G){
 		fprintf(out, "\n");
 	}
 }
-

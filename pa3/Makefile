@@ -1,4 +1,7 @@
 #------------------------------------------------------------------------------
+#  Nadia Shabbar
+#  nshabbar
+#  pa3
 #  Makefile for CSE 101 Programming Assignment 3
 #
 #  make                     makes FindComponents
