@@ -177,12 +177,6 @@ void addArc(Graph G, int u, int v){
 		fprintf(stderr, "Graph Error: calling addArc on vertex not in range.");
 		exit(EXIT_FAILURE);
 	}
-	/* if (length(G -> adj[u]) == 0){ // if empty then just add arc.
-		append(G -> adj[u], v);
-		G -> size++;
-		return;
-	} */
-	//while (index(G -> adj[u]) != NIL && get(G -> adj[u]) < v){
 	moveFront(G->adj[u]); // set to front of list.
 	while(index(G -> adj[u]) != -1){
 		if (v > get(G -> adj[u])){ //this block of code begins sorting.
@@ -195,9 +189,6 @@ void addArc(Graph G, int u, int v){
 		}else{
 			break;
 		}
-		/* else if (v == get(G -> adj[u])){
-			break;
-		} */
 	} // ends the sorting.
 	if (index(G -> adj[u]) == -1){ // appends to empty list.
 		append(G -> adj[u], v);

@@ -169,7 +169,7 @@ void clear(List L){
 
 // set()
 // Overwrites the cursor element's data with x. Pre: length() > 0, index() >= 0.
-void set(List L, int x){
+void set(List L, ListElement x){
 	if (L == NULL){
 		fprintf(stderr, "List Error: calling set() on NULL List reference\n");
 		exit(EXIT_FAILURE);
@@ -244,7 +244,7 @@ void moveNext(List L){
 
 // prepend()
 // Insert new element into L. If L is non-empty, insertion takes place before front element.
-void prepend(List L, int x){
+void prepend(List L, ListElement x){
 	Node N = newNode(x);
 	if (L == NULL){
 		fprintf(stderr, "List Error: calling prepend() on NULL List reference\n");
@@ -265,7 +265,7 @@ void prepend(List L, int x){
 
 // append()
 // Insert new element into L. If L is non-empty, insertion takes place after the back element.
-void append(List L, int x){
+void append(List L, ListElement x){
 	Node N = newNode(x);
 	if (L == NULL){
 		fprintf(stderr, "List Error: calling append() on NULL List reference\n");
@@ -284,7 +284,7 @@ void append(List L, int x){
 
 // insertBefore()
 // Insert new element before cursor. Pre: length() > 0, index() >= 0.
-void insertBefore(List L, int x){
+void insertBefore(List L, ListElement x){
 	if (L == NULL){
 		fprintf(stderr, "List Error: calling insertBefore() on NULL List reference\n");
 		exit(EXIT_FAILURE);
@@ -307,7 +307,7 @@ void insertBefore(List L, int x){
 
 // insertAfter()
 // Insert new element after cursor. Pre: length() > 0, index() >= 0.
-void insertAfter(List L, int x){
+void insertAfter(List L, ListElement x){
 	if (L == NULL){
 		fprintf(stderr, "List Error: calling insertAfter() on NULL List reference\n");
 		exit(EXIT_FAILURE);
@@ -418,23 +418,6 @@ void delete(List L){
 		L -> index = -1; // sets cursor index to undefined.
 		L -> length--; // decrement list length.
 	}			
-}
-
-// Other operations -----------------------------------------------------------
-
-// printList()
-// Prints to the file pointed to by out, a string representation of L consisting of
-// a space separated sequence of integers, with front on left.
-void printList(FILE* out, List L){
-	Node N = NULL;
-	if (L == NULL){
-		fprintf(stderr, "List Error: calling printList() on NULL List reference\n");
-		exit(EXIT_FAILURE);
-	}
-	for (N = L -> front; N != NULL; N = N -> next){
-		fprintf(out, "%d ", N -> data);
-	}
-	printf("\n");
 }
 
 // Extra Credit operation ------------------------------------------------------

@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------------
 // Nadia Shabbar
 // nshabbar
-// pa2
-// GraphTest.c
-// A test client for GRAPH ADT
+// pa3
+// MatrixTest.c
+// A test client for Matrix ADT
 //-----------------------------------------------------------------------------
 #include<stdio.h>
 #include<stdlib.h>

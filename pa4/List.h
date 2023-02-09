@@ -47,10 +47,6 @@ void* back(List L);
 // Returns cursor element of L. Pre: length() > 0, index() >= 0
 void* get(List L);
 
-// equals()
-//Returns true iff Lists A and B are in same state, and returns false otherwise.
-bool equals(List A, List B);
-
 /* // isEmpty()
 // Returns true if L is empty, otherwise returns false.
 bool isEmpty(List L);
@@ -64,7 +60,7 @@ void clear(List L);
 
 // set()
 // Overwrites the cursor element's data with x. Pre: length() > 0, index() >= 0.
-void set(List L, int x);
+void set(List L, ListElement x);
 
 // moveFront()
 // If L is non-empty, sets cursor under the front element, otherwise does nothing.
@@ -88,19 +84,19 @@ void moveNext(List L);
 
 // prepend()
 // Insert new element into L. If L is non-empty, insertion takes place before front element.
-void prepend(List L, int x);
+void prepend(List L, ListElement x);
 
 // append()
 // Insert new element into L. If L is non-empty, insertion takes place after the back element.
-void append(List L, int x);
+void append(List L, ListElement x);
 
 // insertBefore()
 // Insert new element before cursor. Pre: length() > 0, index() >= 0.
-void insertBefore(List L, int x);
+void insertBefore(List L, ListElement x);
 
 // insertAfter()
 // Insert new element after cursor. Pre: length() > 0, index() >= 0.
-void insertAfter(List L, int x);
+void insertAfter(List L, ListElement x);
 
 // deleteFront()
 // Delete the front element. Pre: length() > 0.
@@ -114,19 +110,6 @@ void deleteBack(List L);
 // Delete cursor element, making cursor undefined. Pre: length() > 0, index() >= 0.
 void delete(List L);
 
-
-// Other operations -----------------------------------------------------------
-
-// printList()
-// Prints to the file pointed to by out, a string representation of L consisting of
-// a space separated sequence of integers, with front on left.
-void printList(FILE* out, List L);
-
-// copyList()
-// Returns a new List representing the same integer sequence as L.
-// The cursor in the new list is undefined, regardless of the state of the cursor in L.
-// The state of L is unchanged.
-List copyList(List L);
 
 // Extra Credit operation ------------------------------------------------------
 
