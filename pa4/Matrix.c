@@ -61,12 +61,15 @@ void InsertInOrder(Matrix M, List rows, int col, double x){
 		}	
 	}
 	if (index(rows) == -1){ // if reach end of list, and column not found, make new entry, append, then add nonzero.
-		Entry new = newEntry (col, x);
-		append(rows, new);
-		M -> NNZ++;
+		if (x != 0){ // if value is not zero, creates new entry, inserts, and then increases nonzero.
+			Entry new = newEntry (col, x);
+			append(rows, new);
+			M -> NNZ++;
+		}
 	}
 	return;
 }
+	
 			
 
 // Constructors-Destructors ---------------------------------------------------
@@ -287,17 +290,51 @@ Matrix scalarMult(double x, Matrix A){
 // sum()
 // Returns a reference to a new Matrix object representing A+B.
 // pre: size(A)==size(B)
-Matrix sum(Matrix A, Matrix B);
+Matrix sum(Matrix A, Matrix B){
+	return;
+}
 
 // diff()
 // Returns a reference to a new Matrix object representing A-B.
 // pre: size(A)==size(B)
-Matrix diff(Matrix A, Matrix B);
+Matrix diff(Matrix A, Matrix B){
+	return;
+}
 
 // product()
 // Returns a reference to a new Matrix object representing AB
 // pre: size(A)==size(B)
-Matrix product(Matrix A, Matrix B);
+Matrix product(Matrix A, Matrix B){ // transpose B, multiply in values of both after.
+	if (A == NULL || B == NULL){
+		fprintf(stderr, "Matrix Error: calling product on NULL matrix pointer.");
+		exit(EXIT_FAILURE);
+	}
+	if (size(A) != size(B)){ // if size of matrices are not the same, return false.
+		fprintf(stderr, "Matrix Error: calling product on Matrices of differing sizes.");
+		exit(EXIT_FAILURE);
+	}
+	Matrix prod = newMatrix(size(A));
+	Matrix transB = transpose(B);
+	for (int i = 1; i <= size(A); i++){
+		List Arows = A -> row[i];
+		List Brows = transB -> row [i];
+		moveFront(Arows);
+		moveFront(Brows);
+		while(index(Arows) != -1){
+			Entry tempA = (Entry)get(Arows);
+			Entry tempB = (Entry)get(Brows);
+			double newval = (tempA -> value) * (tempB -> value);
+			tempB -> value = newval;
+			if (newval != 0){
+				changeEntry(prod, i, tempA -> column, tempB -> value);
+			}
+			moveNext(Arows);
+			moveNext(Brows);
+		}
+	}
+	freeMatrix(&transB);
+	return prod;
+}
 
 // printMatrix()
 // Prints a string representation of Matrix M to filestream out. Zero rows
