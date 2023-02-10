@@ -264,7 +264,25 @@ Matrix transpose(Matrix A){
 
 // scalarMult()
 // Returns a reference to a new Matrix object representing xA.
-Matrix scalarMult(double x, Matrix A);
+Matrix scalarMult(double x, Matrix A){
+	if (A == NULL){
+		fprintf(stderr, "Matrix Error: calling scalarMult on NULL matrix pointer.");
+		exit(EXIT_FAILURE);
+	}
+	Matrix scalar = newMatrix(size(A));
+	for (int i = 1; i <= size(A); i++){
+		List Arows = A -> row[i];
+		moveFront(Arows);
+		while(index(Arows) != -1){
+			Entry temp = (Entry)get(Arows);
+			double newval = (temp -> value) * x;
+			temp -> value = newval;
+			changeEntry(scalar, i, temp -> column, temp -> value);
+			moveNext(Arows);
+		}
+	}
+	return scalar;
+}
 
 // sum()
 // Returns a reference to a new Matrix object representing A+B.

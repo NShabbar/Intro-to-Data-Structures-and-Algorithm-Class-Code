@@ -67,7 +67,17 @@ int main(int argc, char* argv[]){
 	printMatrix(stdout, T);
 	printf("\n");
 	
-	freeMatrix(&M);
+	// scalarMult Test
+	//-----------------------------------------------------------------------------
+	printf("\n");
+	printf("Testing scalarMult() function of Matrix.c\n");
+	Matrix S = scalarMult(5, B);
+	printMatrix(stdout, S);
+	printf("\n");
+	
+	
 	freeMatrix(&B);
+	freeMatrix(&M);
+	freeMatrix(&S);
 	freeMatrix(&T);
 }
