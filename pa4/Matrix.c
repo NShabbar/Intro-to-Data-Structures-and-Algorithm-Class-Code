@@ -279,8 +279,7 @@ Matrix scalarMult(double x, Matrix A){
 		while(index(Arows) != -1){
 			Entry temp = (Entry)get(Arows);
 			double newval = (temp -> value) * x;
-			temp -> value = newval;
-			changeEntry(scalar, i, temp -> column, temp -> value);
+			changeEntry(scalar, i, temp -> column, newval);
 			moveNext(Arows);
 		}
 	}
@@ -291,14 +290,114 @@ Matrix scalarMult(double x, Matrix A){
 // Returns a reference to a new Matrix object representing A+B.
 // pre: size(A)==size(B)
 Matrix sum(Matrix A, Matrix B){
-	return;
+	if (A == NULL || B == NULL){
+		fprintf(stderr, "Matrix Error: calling sum on NULL matrix pointer.");
+		exit(EXIT_FAILURE);
+	}
+	if (size(A) != size(B)){ // if size of matrices are not the same, return false.
+		fprintf(stderr, "Matrix Error: calling sum on Matrices of differing sizes.");
+		exit(EXIT_FAILURE);
+	}
+	if (A == B){
+		return scalarMult(2, A);
+	}
+	Matrix sums = newMatrix(size(A)); // since they have to be same size, doesn't mature which size you use.
+	for (int i = 1; i <= size(A); i++){
+		List Arows = A -> row[i];
+		List Brows = B -> row[i];
+		moveFront(Arows);
+		moveFront(Brows);
+		while(index(Arows) != -1 && index(Brows) != -1){
+			if (length(Arows) == 0 && length(Brows) != 0){
+				Entry tempB = (Entry)get(Brows);
+				changeEntry(sums, i, tempB -> column, tempB -> value);
+				moveNext(Brows);
+			}
+			if (length(Arows) != 0 && length(Brows) == 0){
+				Entry tempA = (Entry)get(Arows);
+				changeEntry(sums, i, tempA -> column, tempA -> value);
+				moveNext(Arows);
+			}
+			Entry tempA = (Entry)get(Arows);
+			Entry tempB = (Entry)get(Brows);
+			if ((tempA -> column) < (tempB -> column)){
+				double newval = (tempA -> value) + (tempB -> value);
+				changeEntry(sums, i, tempA -> column, newval);
+				moveNext(Arows);
+			}
+			else if ((tempA -> column) > (tempB -> column)){
+				double newval = (tempA -> value) + (tempB -> value);
+				changeEntry(sums, i, tempB -> column, newval);
+				moveNext(Brows);
+			}else{
+				double newval = (tempA -> value) + (tempB -> value);
+				if (newval != 0){
+					changeEntry(sums, i, tempA -> column, newval);
+				}
+			/* moveNext(Arows);	
+			moveNext(Brows); */
+			}
+		moveNext(Arows);	
+		moveNext(Brows);			
+		}
+	}
+	return sums;
 }
 
 // diff()
 // Returns a reference to a new Matrix object representing A-B.
 // pre: size(A)==size(B)
 Matrix diff(Matrix A, Matrix B){
-	return;
+	if (A == NULL || B == NULL){
+		fprintf(stderr, "Matrix Error: calling diff on NULL matrix pointer.");
+		exit(EXIT_FAILURE);
+	}
+	if (size(A) != size(B)){ // if size of matrices are not the same, return false.
+		fprintf(stderr, "Matrix Error: calling diff on Matrices of differing sizes.");
+		exit(EXIT_FAILURE);
+	}
+	Matrix diffs = newMatrix(size(A)); // since they have to be same size, doesn't mature which size you use.
+	if (A == B){
+		return diffs;
+	}
+	for (int i = 1; i <= size(A); i++){
+		List Arows = A -> row[i];
+		List Brows = B -> row[i];
+		moveFront(Arows);
+		moveFront(Brows);
+		while(index(Arows) != -1 && index(Brows) != -1){
+			if (length(Arows) == 0 && length(Brows) != 0){
+				Entry tempB = (Entry)get(Brows);
+				changeEntry(diffs, i, tempB -> column, tempB -> value);
+				moveNext(Brows);
+			}
+			if (length(Arows) != 0 && length(Brows) == 0){
+				Entry tempA = (Entry)get(Arows);
+				changeEntry(diffs, i, tempA -> column, tempA -> value);
+				moveNext(Arows);
+			}
+			Entry tempA = (Entry)get(Arows);
+			Entry tempB = (Entry)get(Brows);
+			if ((tempA -> column) < (tempB -> column)){
+				double newval = (tempA -> value) - (tempB -> value);
+				changeEntry(diffs, i, tempA -> column, newval);
+				moveNext(Arows);
+			}
+			else if ((tempA -> column) > (tempB -> column)){
+				double newval = (tempA -> value) - (tempB -> value);
+				changeEntry(diffs, i, tempB -> column, newval);
+				moveNext(Brows);
+			}else{
+				double newval = (tempA -> value) - (tempB -> value);
+				if (newval != 0){
+					changeEntry(diffs, i, tempA -> column, newval);
+				}
+			moveNext(Arows);	
+			moveNext(Brows);
+			}		
+		}
+	}
+	return diffs;
 }
 
 // product()
@@ -320,16 +419,26 @@ Matrix product(Matrix A, Matrix B){ // transpose B, multiply in values of both a
 		List Brows = transB -> row [i];
 		moveFront(Arows);
 		moveFront(Brows);
-		while(index(Arows) != -1){
+		while(index(Arows) != -1 && index(Brows) != -1){
 			Entry tempA = (Entry)get(Arows);
 			Entry tempB = (Entry)get(Brows);
-			double newval = (tempA -> value) * (tempB -> value);
-			tempB -> value = newval;
-			if (newval != 0){
-				changeEntry(prod, i, tempA -> column, tempB -> value);
+			if ((tempA -> column) < (tempB -> column)){
+				double newval = (tempA -> value) * (tempB -> value);
+				changeEntry(prod, i, tempA -> column, newval);
+				moveNext(Arows);
 			}
-			moveNext(Arows);
+			else if ((tempA -> column) > (tempB -> column)){
+				double newval = (tempA -> value) * (tempB -> value);
+				changeEntry(prod, i, tempB -> column, newval);
+				moveNext(Brows);
+			}else{
+				double newval = (tempA -> value) * (tempB -> value);
+				if (newval != 0){
+					changeEntry(prod, i, tempA -> column, newval);
+				}
+			moveNext(Arows);	
 			moveNext(Brows);
+			}		
 		}
 	}
 	freeMatrix(&transB);
