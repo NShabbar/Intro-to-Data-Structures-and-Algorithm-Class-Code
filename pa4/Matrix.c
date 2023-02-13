@@ -69,7 +69,6 @@ void InsertInOrder(Matrix M, List rows, int col, double x){
 	}
 	return;
 }
-	
 			
 
 // Constructors-Destructors ---------------------------------------------------
@@ -277,8 +276,9 @@ Matrix scalarMult(double x, Matrix A){
 		List Arows = A -> row[i];
 		moveFront(Arows);
 		while(index(Arows) != -1){
+			double newval = 0;
 			Entry temp = (Entry)get(Arows);
-			double newval = (temp -> value) * x; // multiply value by scalar value.
+			newval = (temp -> value) * x; // multiply value by scalar value.
 			changeEntry(scalar, i, temp -> column, newval);
 			moveNext(Arows);
 		}
@@ -312,7 +312,8 @@ Matrix sum(Matrix A, Matrix B){
 				Entry tempA = (Entry)get(Arows);
 				Entry tempB = (Entry)get(Brows);
 				if((tempA -> column) == (tempB -> column)){ // when columns are equal, add both values.
-					double newval = (tempA -> value) + (tempB -> value);
+					double newval = 0;
+					newval = (tempA -> value) + (tempB -> value);
 					changeEntry(sums, i, tempA -> column, newval);
 					moveNext(Arows);	
 					moveNext(Brows);
@@ -369,7 +370,8 @@ Matrix diff(Matrix A, Matrix B){
 				Entry tempA = (Entry)get(Arows);
 				Entry tempB = (Entry)get(Brows);
 				if((tempA -> column) == (tempB -> column)){ // when columns are equal, add both values.
-					double newval = (tempA -> value) - (tempB -> value);
+					double newval = 0;
+					newval = (tempA -> value) - (tempB -> value);
 					changeEntry(diffs, i, tempA -> column, newval);
 					moveNext(Arows);	
 					moveNext(Brows);
@@ -379,14 +381,16 @@ Matrix diff(Matrix A, Matrix B){
 					moveNext(Arows);
 				}
 				else if ((tempA -> column) > (tempB -> column)){ // if one column is zero, but the other is not, focus on the one that is not.
-					double newval = 0 - (tempB -> value);
+					double newval = 0;
+					newval = 0 - (tempB -> value);
 					changeEntry(diffs, i, tempB -> column, newval);
 					moveNext(Brows);
 				}
 			}
 			else if(index(Arows) == -1 && index(Brows) != -1){ // when A row is completely empty.
 				Entry tempB = (Entry)get(Brows);
-				double newval = 0 - (tempB -> value);
+				double newval = 0;
+				newval = 0 - (tempB -> value);
 				changeEntry(diffs, i, tempB -> column, newval);
 				moveNext(Brows);
 			}
