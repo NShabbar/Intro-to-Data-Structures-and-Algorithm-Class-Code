@@ -273,12 +273,12 @@ Matrix scalarMult(double x, Matrix A){
 		exit(EXIT_FAILURE);
 	}
 	Matrix scalar = newMatrix(size(A));
-	for (int i = 1; i <= size(A); i++){
+	for (int i = 1; i <= size(A); i++){ // iterate through list index.
 		List Arows = A -> row[i];
 		moveFront(Arows);
 		while(index(Arows) != -1){
 			Entry temp = (Entry)get(Arows);
-			double newval = (temp -> value) * x;
+			double newval = (temp -> value) * x; // multiply value by scalar value.
 			changeEntry(scalar, i, temp -> column, newval);
 			moveNext(Arows);
 		}
@@ -307,38 +307,37 @@ Matrix sum(Matrix A, Matrix B){
 		List Brows = B -> row[i];
 		moveFront(Arows);
 		moveFront(Brows);
-		while(index(Arows) != -1 && index(Brows) != -1){
-			if (length(Arows) == 0 && length(Brows) != 0){
+		while(index(Arows) != -1 || index(Brows) != -1){
+			if(index(Arows) != -1 && index(Brows) != -1){
+				Entry tempA = (Entry)get(Arows);
+				Entry tempB = (Entry)get(Brows);
+				if((tempA -> column) == (tempB -> column)){ // when columns are equal, add both values.
+					double newval = (tempA -> value) + (tempB -> value);
+					changeEntry(sums, i, tempA -> column, newval);
+					moveNext(Arows);	
+					moveNext(Brows);
+				}
+				else if ((tempA -> column) < (tempB -> column)){ // if one column is zero, but the other is not, focus on the one that is not.
+					changeEntry(sums, i, tempA -> column, (tempA -> value));
+					moveNext(Arows);
+				}
+				else if ((tempA -> column) > (tempB -> column)){ // if one column is zero, but the other is not, focus on the one that is not.
+					changeEntry(sums, i, tempB -> column, (tempB -> value));
+					moveNext(Brows);
+				}
+			}
+			else if(index(Arows) == -1 && index(Brows) != -1){ // when A row is completely empty.
 				Entry tempB = (Entry)get(Brows);
 				changeEntry(sums, i, tempB -> column, tempB -> value);
 				moveNext(Brows);
 			}
-			if (length(Arows) != 0 && length(Brows) == 0){
+			else if(index(Arows) != -1 && index(Brows) == -1){ // when B row is completely empty.
 				Entry tempA = (Entry)get(Arows);
 				changeEntry(sums, i, tempA -> column, tempA -> value);
 				moveNext(Arows);
 			}
-			Entry tempA = (Entry)get(Arows);
-			Entry tempB = (Entry)get(Brows);
-			if ((tempA -> column) < (tempB -> column)){
-				double newval = (tempA -> value) + (tempB -> value);
-				changeEntry(sums, i, tempA -> column, newval);
-				moveNext(Arows);
-			}
-			else if ((tempA -> column) > (tempB -> column)){
-				double newval = (tempA -> value) + (tempB -> value);
-				changeEntry(sums, i, tempB -> column, newval);
-				moveNext(Brows);
-			}else{
-				double newval = (tempA -> value) + (tempB -> value);
-				if (newval != 0){
-					changeEntry(sums, i, tempA -> column, newval);
-				}
-			/* moveNext(Arows);	
-			moveNext(Brows); */
-			}
-		moveNext(Arows);	
-		moveNext(Brows);			
+		/* moveNext(Arows);	
+		moveNext(Brows); */			
 		}
 	}
 	return sums;
@@ -365,35 +364,36 @@ Matrix diff(Matrix A, Matrix B){
 		List Brows = B -> row[i];
 		moveFront(Arows);
 		moveFront(Brows);
-		while(index(Arows) != -1 && index(Brows) != -1){
-			if (length(Arows) == 0 && length(Brows) != 0){
+		while(index(Arows) != -1 || index(Brows) != -1){
+			if(index(Arows) != -1 && index(Brows) != -1){
+				Entry tempA = (Entry)get(Arows);
 				Entry tempB = (Entry)get(Brows);
-				changeEntry(diffs, i, tempB -> column, tempB -> value);
+				if((tempA -> column) == (tempB -> column)){ // when columns are equal, add both values.
+					double newval = (tempA -> value) - (tempB -> value);
+					changeEntry(diffs, i, tempA -> column, newval);
+					moveNext(Arows);	
+					moveNext(Brows);
+				}
+				else if ((tempA -> column) < (tempB -> column)){ // if one column is zero, but the other is not, focus on the one that is not.
+					changeEntry(diffs, i, tempA -> column, (tempA -> value));
+					moveNext(Arows);
+				}
+				else if ((tempA -> column) > (tempB -> column)){ // if one column is zero, but the other is not, focus on the one that is not.
+					double newval = 0 - (tempB -> value);
+					changeEntry(diffs, i, tempB -> column, newval);
+					moveNext(Brows);
+				}
+			}
+			else if(index(Arows) == -1 && index(Brows) != -1){ // when A row is completely empty.
+				Entry tempB = (Entry)get(Brows);
+				double newval = 0 - (tempB -> value);
+				changeEntry(diffs, i, tempB -> column, newval);
 				moveNext(Brows);
 			}
-			if (length(Arows) != 0 && length(Brows) == 0){
+			else if(index(Arows) != -1 && index(Brows) == -1){ // when B row is completely empty.
 				Entry tempA = (Entry)get(Arows);
 				changeEntry(diffs, i, tempA -> column, tempA -> value);
 				moveNext(Arows);
-			}
-			Entry tempA = (Entry)get(Arows);
-			Entry tempB = (Entry)get(Brows);
-			if ((tempA -> column) < (tempB -> column)){
-				double newval = (tempA -> value) - (tempB -> value);
-				changeEntry(diffs, i, tempA -> column, newval);
-				moveNext(Arows);
-			}
-			else if ((tempA -> column) > (tempB -> column)){
-				double newval = (tempA -> value) - (tempB -> value);
-				changeEntry(diffs, i, tempB -> column, newval);
-				moveNext(Brows);
-			}else{
-				double newval = (tempA -> value) - (tempB -> value);
-				if (newval != 0){
-					changeEntry(diffs, i, tempA -> column, newval);
-				}
-			moveNext(Arows);	
-			moveNext(Brows);
 			}		
 		}
 	}
@@ -415,30 +415,31 @@ Matrix product(Matrix A, Matrix B){ // transpose B, multiply in values of both a
 	Matrix prod = newMatrix(size(A));
 	Matrix transB = transpose(B);
 	for (int i = 1; i <= size(A); i++){
-		List Arows = A -> row[i];
-		List Brows = transB -> row [i];
-		moveFront(Arows);
-		moveFront(Brows);
-		while(index(Arows) != -1 && index(Brows) != -1){
-			Entry tempA = (Entry)get(Arows);
-			Entry tempB = (Entry)get(Brows);
-			if ((tempA -> column) < (tempB -> column)){
-				double newval = (tempA -> value) * (tempB -> value);
-				changeEntry(prod, i, tempA -> column, newval);
-				moveNext(Arows);
+		List Arows = A -> row[i];	
+		for( int j = 1; j <= size(A); j++){
+			List Brows = transB -> row [j];
+			if(!length(Arows) || !length(Brows)){
+				continue;
 			}
-			else if ((tempA -> column) > (tempB -> column)){
-				double newval = (tempA -> value) * (tempB -> value);
-				changeEntry(prod, i, tempB -> column, newval);
-				moveNext(Brows);
-			}else{
-				double newval = (tempA -> value) * (tempB -> value);
-				if (newval != 0){
-					changeEntry(prod, i, tempA -> column, newval);
+			double newval =0;
+			moveFront(Arows);
+			moveFront(Brows);
+			while(index(Arows) != -1 && index(Brows) != -1){
+				Entry tempA = (Entry)get(Arows);
+				Entry tempB = (Entry)get(Brows);
+				if ((tempA -> column) == (tempB -> column)){
+					newval += (tempA -> value) * (tempB -> value);
+					moveNext(Arows);	
+					moveNext(Brows);
 				}
-			moveNext(Arows);	
-			moveNext(Brows);
-			}		
+				else if ((tempA -> column) < (tempB -> column)){
+					moveNext(Arows);
+				}
+				else if ((tempA -> column) > (tempB -> column)){
+					moveNext(Brows);
+				}		
+			}
+			changeEntry(prod, i, j, newval);
 		}
 	}
 	freeMatrix(&transB);

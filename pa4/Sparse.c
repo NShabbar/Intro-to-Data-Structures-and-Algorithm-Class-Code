@@ -18,10 +18,12 @@
 // Helper Functions
 //-----------------------------------------------------------------------------
 
-
+void main(){
+	return;
+}
 // Main Function
 //-----------------------------------------------------------------------------
-int main(int argc, char * argv[]){
+/* int main(int argc, char * argv[]){
 	FILE *in, *out;
 	// Check command line for correct number of arguments
 	if (argc != 3){
@@ -117,4 +119,4 @@ int main(int argc, char * argv[]){
 	fclose(in); // close the in file.
 	fclose(out); // close the out file.
 	return(0);
-}
+} */
