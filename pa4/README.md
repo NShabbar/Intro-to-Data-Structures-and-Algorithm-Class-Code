@@ -1,6 +1,6 @@
 # Nadia Shabbar #
 # nshabbar #
-# pa3 #
+# pa4 #
 
 List.h written by me:
 used in List.c to define functions.
@@ -8,16 +8,16 @@ used in List.c to define functions.
 List.c written by me:
 used in Graph.c and FindPath.c to sort array strings.
 
-Graph.h written by me:
+Matrix.h written by me:
 used in Graph.c to define functions.
 
-Graph.c written by me:
+Matrix.c written by me:
 used in FindComponents.c to create scc.
 
-GraphTest.c written by me:
+MatrixTest.c written by me:
 used to test Graph.c.
 
-FindComponents.c written by me
+Sparse.c written by me
 
 Makefile provided on webpage, alter as needed
 README written by me

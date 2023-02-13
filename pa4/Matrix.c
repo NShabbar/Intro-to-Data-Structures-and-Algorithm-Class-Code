@@ -469,14 +469,14 @@ void printMatrix(FILE* out, Matrix M){
 	for (int i = 1; i <= size(M); i++){
 		List rows = M -> row[i];
 		moveFront(rows);
-		fprintf(out, "%d: ", i);
+		if (!length(rows)){
+				continue;
+		}
+		fprintf(out, "%d:", i);
 		while( index(rows) > -1){
 			Entry col = (Entry)get(rows);
-			if (!length(rows)){
-				continue;
-			}
 			if (col -> value != 0){
-				fprintf(out, "(%d, %.1f)", col -> column, col -> value);
+				fprintf(out, " (%d, %.1f)", col -> column, col -> value);
 			}
 			moveNext(rows);
 		}

@@ -18,12 +18,9 @@
 // Helper Functions
 //-----------------------------------------------------------------------------
 
-void main(){
-	return;
-}
 // Main Function
 //-----------------------------------------------------------------------------
-/* int main(int argc, char * argv[]){
+int main(int argc, char * argv[]){
 	FILE *in, *out;
 	// Check command line for correct number of arguments
 	if (argc != 3){
@@ -43,29 +40,21 @@ void main(){
 	}
 	int n, NNZ_A, NNZ_B, row, col;
 	double value;
+
+	// scan for inputs
+	fscanf(in, "%d %d %d", &n, &NNZ_A, &NNZ_B);
 	
-	do{
-		fgetc(in);
-		// scan for inputs
-		fscanf(in, "&d %d &d", &n, &NNZ_A, &NNZ_B);
-	
-		Matrix A = newMatrix(n);
-		Matrix B = newMatrix(n);
-	
-		for (int i = 0; i <= NNZ_A; i++){
-			row = fgetc(in);
-			col = fgetc(in);
-			value = fgetc(in);
-			fscanf(in, "&d %d &d", &row, &col, &value);
-			changeEntry(A, row, col, value);
-		}
-		for (int i = 0; i <= NNZ_B; i++){
-			row = fgetc(in);
-			col = fgetc(in);
-			value = fgetc(in);
-			fscanf(in, "&d %d &d", &row, &col, &value);
-			changeEntry(B, row, col, value);
-		}
+	Matrix A = newMatrix(n);
+	Matrix B = newMatrix(n);
+	fgetc(in);
+	for (int i = 0; i < NNZ_A; i++){
+		fscanf(in, "%d %d %lf", &row, &col, &value);
+		changeEntry(A, row, col, value);
+	}
+	fgetc(in);
+	for (int i = 0; i < NNZ_B; i++){
+		fscanf(in, "%d %d %lf", &row, &col, &value);
+		changeEntry(B, row, col, value);
 	}
 	fprintf(out, "A has %d non-zero entries:\n", NNZ(A));
     printMatrix(out, A);
@@ -119,4 +108,4 @@ void main(){
 	fclose(in); // close the in file.
 	fclose(out); // close the out file.
 	return(0);
-} */
+}
