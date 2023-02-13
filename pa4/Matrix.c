@@ -101,6 +101,7 @@ Matrix newMatrix(int n){
 	}
 	Matrix M = malloc(sizeof(MatrixObj)); // assign memory for size of matrix M.	
 	M -> size = n; // initialize size to n.
+	M -> NNZ = 0;
 	M -> row = calloc(n+1, sizeof(List)); // allocate space for adj.
 	// the point of doing n+1 is to waste the first slot, something the professor mentioned
 	// was recommended to do.
