@@ -1,6 +1,9 @@
 //-----------------------------------------------------------------------------
+// Nadia Shabbar
+// nshabbar
+// pa5
 // List.cpp
-// Implementation file for List ADT
+// implementation for List ADT
 //-----------------------------------------------------------------------------
 #include<iostream>
 #include<string>
@@ -74,7 +77,7 @@ ListElement List::front() const{
 	if (num_elements == 0){
 		throw std:: length_error("List: front(): empty List");
 	}
-	return frontDummy -> next;
+	return frontDummy -> next -> data;
 }
 
 // back()
@@ -84,7 +87,7 @@ ListElement List::back() const{
 	if (num_elements == 0){
 		throw std:: length_error("List: back(): empty List");
 	}
-	return backDummy -> prev;
+	return backDummy -> prev -> data;
 }
 
 // position()
@@ -100,7 +103,7 @@ ListElement List::peekNext() const{
 	if (pos_cursor == num_elements){
 		throw std:: length_error("List: peekNext(): empty List");
 	}
-	return afterCursor;
+	return afterCursor -> data;
 }
 
 // peekPrev()
@@ -110,7 +113,7 @@ ListElement List::peekPrev() const{
 	if (pos_cursor <= 0){
 		throw std:: length_error("List: peekprev(): empty List");
 	}
-	return beforeCursor;
+	return beforeCursor -> data;
 }
 
 
@@ -134,7 +137,6 @@ void List::clear(){
 // Moves cursor to position 0 in this List.
 void List::moveFront(){
 	if (length() > 0){
-		Node* N = frontDummy -> next;
 		pos_cursor = 0;
 	}
 }
@@ -143,7 +145,6 @@ void List::moveFront(){
 // Moves cursor to position length() in this List.
 void List::moveBack(){
 	if (length() > 0){
-		Node* N = backDummy -> prev;
 		pos_cursor = length();
 	}
 }
@@ -261,14 +262,15 @@ void List::eraseBefore(){
 // at position length(), and returns -1. 
 int List::findNext(ListElement x){
 	while (pos_cursor != length()){
-		if (afteCursor -> data == x){
+		if (afterCursor -> data == x){
 			return pos_cursor;
 		}
 		moveNext();
 	}
 	if (pos_cursor == length()){
-		return -1
+		return -1;
 	}
+	return -1;
 }					
 
 // findPrev()
@@ -287,6 +289,7 @@ int List::findPrev(ListElement x){
 	if (pos_cursor == 0){
 		return -1;
 	}
+	return -1;
 }
 
 // cleanup()
@@ -295,7 +298,9 @@ int List::findPrev(ListElement x){
 // occurrance of each element, and removing all other occurances. The cursor 
 // is not moved with respect to the retained elements, i.e. it lies between 
 // the same two retained elements that it did before cleanup() was called.
-void List::cleanup();
+void List::cleanup(){
+	return;
+}
  
 // concat()
 // Returns a new List consisting of the elements of this List, followed by
@@ -377,7 +382,7 @@ List& List::operator=( const List& L ){
 		std::swap(backDummy, temp.backDummy);
 		std::swap(beforeCursor, temp.beforeCursor);
 		std::swap(afterCursor, temp.afterCursor);
-		std::swap(pos_cursor, temp.pos_ursor);
+		std::swap(pos_cursor, temp.pos_cursor);
 		std::swap(num_elements, temp.num_elements);
 	}
 	// return this with the new data.
