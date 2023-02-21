@@ -1,0 +1,16 @@
+# Nadia Shabbar #
+# nshabbar #
+# pa1 #
+
+List.h written by professor:
+used in List.cpp to define functions.
+
+List.cpp written by me:
+used in Shuffle.cpp to sort array strings.
+
+ListTest.cpp written by me:
+used to test List.cpp.
+
+Shuffle.cpp written by me
+Makefile provided on webpage, alter as needed
+README written by me
