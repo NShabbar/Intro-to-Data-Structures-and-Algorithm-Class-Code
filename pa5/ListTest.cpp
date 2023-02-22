@@ -16,11 +16,11 @@ int main(){
 
 	// insertAfter Test
 	//-----------------------------------------------------------------------------	
-	A.insertAfter(1);
+	/* A.insertAfter(1);
     A.insertAfter(2);
     A.insertAfter(3);
     A.insertAfter(5);
-    A.insertAfter(12);
+    A.insertAfter(12); */
 	A.insertAfter(5);
 	A.insertAfter(4);
 	A.insertAfter(3);
@@ -57,11 +57,55 @@ int main(){
 	//-----------------------------------------------------------------------------	
 	cout << "Printing element before cursor of list A: " << A.peekPrev() << endl;
 	
+	// copyList Test
+	//-----------------------------------------------------------------------------	
+	List B = List(A);
+	cout << "Printing list B: " << B << endl;
+	
 	// eraseAfter Test
 	//-----------------------------------------------------------------------------	
-	for (int i = 0; i < A.length()+1; i++){
-		cout << "Printing element being deleted of list A: " << A.peekNext() << endl;
-		A.eraseAfter();
+	B.moveFront();
+	while (B.length() != 0){
+		cout << "Printing element being deleted of list B: " << B.peekNext() << endl;
+		B.eraseAfter();
+		cout << "Printing list B: " << B << endl;
 	}
-
+	
+	// eraseBefore Test
+	//-----------------------------------------------------------------------------	
+	B = List(A);
+	cout << "Printing list B: " << B << endl;
+	B.moveBack();
+	while (B.length() != 0){
+		cout << "Printing element being deleted of list B: " << B.peekPrev() << endl;
+		B.eraseBefore();
+		cout << "Printing list B: " << B << endl;
+	}
+	
+	// moveNext Test
+	//-----------------------------------------------------------------------------	
+	cout << "Printing element after cursor of list A: " << A.moveNext() << endl;
+	
+	// movePrev Test
+	//-----------------------------------------------------------------------------	
+	A.moveBack();
+	cout << "Printing element before cursor of list A: " << A.movePrev() << endl;
+	
+	// equals Test
+	//-----------------------------------------------------------------------------
+	B = List(A);	
+	bool eq = false;
+	if (A == B){
+		eq = true;
+	}
+	cout << "Printing result of equals: " << eq << endl;
+	
+	// cleanup Test
+	//-----------------------------------------------------------------------------
+	A.insertBefore(0);
+	A.insertBefore(1);
+	A.insertBefore(2);
+	cout << "Printing list A: " << A << endl;
+	A.cleanup();
+	cout << "Printing result of cleanup: " << A << endl;
 }
