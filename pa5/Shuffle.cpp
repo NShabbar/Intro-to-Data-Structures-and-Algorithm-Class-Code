@@ -29,9 +29,6 @@ void shuffle(List& D){
 		D.insertBefore(B.moveNext());
 		D.insertBefore(A.moveNext());
 	}
-	/* while (A.position() != A.length()){
-		D.insertAfter(A.moveNext());
-	} */
 	while (B.position() != B.length()){
 		D.insertBefore(B.moveNext());
 	}
@@ -44,7 +41,6 @@ int main(int argc, char* argv[]){
 	}
 	int n = atoi(argv[1]);
 	List D;
-	//cout << "Shuffle " << n << endl;
 	cout << "deck size \t shuffle count" << endl;
 	cout << "------------------------------" << endl;
 	List C = List(D);
