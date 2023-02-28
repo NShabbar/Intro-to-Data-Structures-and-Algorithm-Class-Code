@@ -11,7 +11,7 @@
 // BigInteger()
 // Constructor that creates a new BigInteger in the zero state: 
 // signum=0, digits=().
-BigInteger(){
+BigInteger::BigInteger(){
 	signum = 0;
 	digits = List();
 }
@@ -20,11 +20,11 @@ BigInteger(){
 // Constructor that creates a new BigInteger from the string s.
 // Pre: s is a non-empty string consisting of (at least one) base 10 digit
 // {0,1,2,3,4,5,6,7,8,9}, and an optional sign {+,-} prefix.
-BigInteger(std::string s);
+BigInteger::BigInteger(std::string s);
 
 // BigInteger()   
 // Constructor that creates a copy of N.
-BigInteger(const BigInteger& N);
+BigInteger::BigInteger(const BigInteger& N);
 
 // Optional Destuctor
 // ~BigInteger()
@@ -36,24 +36,24 @@ BigInteger(const BigInteger& N);
 // sign()
 // Returns -1, 1 or 0 according to whether this BigInteger is negative, 
 // positive or 0, respectively.
-int sign() const;
+int BigInteger::BigInteger::sign() const;
 
 // compare()
 // Returns -1, 1 or 0 according to whether this BigInteger is less than N,
 // greater than N or equal to N, respectively.
-int compare(const BigInteger& N) const;
+int BigInteger::compare(const BigInteger& N) const;
 
 
 // Manipulation procedures -------------------------------------------------
 
 // makeZero()
 // Re-sets this BigInteger to the zero state.
-void makeZero();
+void BigInteger::makeZero();
 
 // negate()
 // If this BigInteger is zero, does nothing, otherwise reverses the sign of 
 // this BigInteger positive <--> negative. 
-void negate();
+void BigInteger::negate();
 
 
 // BigInteger Arithmetic operations ----------------------------------------
@@ -78,7 +78,24 @@ BigInteger mult(const BigInteger& N) const;
 // base 10 digits. If this BigInteger is negative, the returned string 
 // will begin with a negative sign '-'. If this BigInteger is zero, the
 // returned string will consist of the character '0' only.
-std::string to_string();
+std::string to_string(){
+	std::string out = "";
+	if (signum == 0){
+		out = "0";
+		return out;
+	}
+	else if (signum == -1){
+		out += "-";
+	}
+	std::string str_list = digits.to_string();
+	//
+	//
+	if (str_list != "0"){
+	//
+	}
+	out += str_list;
+	return out;
+}
 
 
 // Overriden Operators -----------------------------------------------------
@@ -196,8 +213,26 @@ BigInteger operator-=( BigInteger& A, const BigInteger& B ){
 
 // operator*()
 // Returns the product A*B. 
-BigInteger operator*( const BigInteger& A, const BigInteger& B );
+BigInteger operator*( const BigInteger& A, const BigInteger& B ){
+	if (A.signum == 0 || B.signum == 0){
+		BigInteger C;
+		return C;
+	}else{
+		BigInteger C = A.mult(B);
+		if (A.signum == B.signum){
+			C.signum = 1;
+		}else{
+			C.signum = -1;
+		}
+		return C;
+	}
+}
 
 // operator*=()
 // Overwrites A with the product A*B. 
-BigInteger operator*=( BigInteger& A, const BigInteger& B );
+BigInteger operator*=( BigInteger& A, const BigInteger& B ){
+	BigInteger C = A.mult(B);
+	A.digits = C.digits;
+	A.signum = C.signum;
+	return A;
+}
