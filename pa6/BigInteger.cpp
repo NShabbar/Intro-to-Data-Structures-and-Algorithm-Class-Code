@@ -5,6 +5,66 @@
 // BigInteger.cpp
 // implementation for BigInteger ADT
 //-----------------------------------------------------------------------------
+#include<iostream>
+#include<string>
+#include"List.h"
+#include "BigInteger.h"
+using namespace std;
+// Global Variables --------------------------------------------------------
+const int power = 9;
+const long base = 1000000000;
+
+// Private functions -------------------------------------------------------
+
+// removes undesired characters.
+std::string CleanList(std::string str){
+	string output = "";
+	for (unsigned long int i = 0; i < str.length(); i++){
+		if ( str[i] != '(' && str[i] != ')' && str[i] != ','){
+			out += str[i];
+		}
+	}
+	return output;
+}
+
+// returns any potential lost zeros.
+std::string LostZeros(std::string str){
+	string output = "";
+	string number = "";
+	string temp = "";
+	while (unsigned long int i = 0 < str.length()){
+		if (str[i] == ' '){
+			if (number.length() < power){
+				while (temp.length() != power{
+					temp.insert(temp.begin(), '0');
+				}
+			}
+			number += temp;
+			temp = "";
+		}else{
+			temp.insertBefore(str[i]);
+		}
+		i++;
+		output += nnumber;
+		number = "";
+	}
+	while (temp.length() ! = power){
+		temp.insert(temp.begin(), '0');
+	}
+	output += temp;
+	return output;
+}
+
+
+// goes through string to determine if string is a number.
+bool Numbers(string str){
+	for (unsigned long int i = 0; i < str.length(); i++){
+		if (isdigit(str[i]) == false){
+			return false;
+		}
+	}
+	return true;
+}
 
 // Class Constructors & Destructors ----------------------------------------
 
@@ -20,11 +80,54 @@ BigInteger::BigInteger(){
 // Constructor that creates a new BigInteger from the string s.
 // Pre: s is a non-empty string consisting of (at least one) base 10 digit
 // {0,1,2,3,4,5,6,7,8,9}, and an optional sign {+,-} prefix.
-BigInteger::BigInteger(std::string s);
+BigInteger::BigInteger(std::string s){
+	if (s.empty()){
+		throw cerr << "BigInteger: Constructor: empty string" << endl;
+	}
+	if (s[0] == '+' || s[0] == '-'){ // check for sign.
+		if (s[0] == '+'){
+			signum = 1;
+		}
+		else if (s[0] == '-'){
+			signum = -1;
+		}
+		s.erase(s.begin());
+	}
+	else if (s[0] == '0'){ // if sign is zero, empty list.
+		signum = 0;
+		digits = List();
+		return;
+	}else{ // if no sign then assumed positive.
+		signum = 1;
+	}
+	if (s != '0'){ // get rid of leading zeros.
+		s.erase(0, s.find_first_not_of('0'));
+	}
+	digits = List();
+	while ((s.length() % power) != 0){
+		s = s.insert(0, '0');
+	}
+	int beginning = 0;
+	int end = s.length() - 1;
+	for (unsigned long int i = 0; i < (s.length() / power); i++){
+		beginning = end - (power -1);
+		string substring = s.substr(beginning, power);
+		if (!Numbers(substring)){
+			throw cerr << "BigInteger: Constructor: non-numeric string" << endl;
+		}else{
+			digits.front();
+			digits.insertAfter(stol(substring));
+		}
+		end = beginning - 1;
+	}
+}
 
 // BigInteger()   
 // Constructor that creates a copy of N.
-BigInteger::BigInteger(const BigInteger& N);
+BigInteger::BigInteger(const BigInteger& N){
+	this -> signum = N -> signum;
+	this -> digits = N -> digits;
+}
 
 // Optional Destuctor
 // ~BigInteger()
@@ -36,7 +139,9 @@ BigInteger::BigInteger(const BigInteger& N);
 // sign()
 // Returns -1, 1 or 0 according to whether this BigInteger is negative, 
 // positive or 0, respectively.
-int BigInteger::BigInteger::sign() const;
+int BigInteger::BigInteger::sign() const{
+	return signum;
+}
 
 // compare()
 // Returns -1, 1 or 0 according to whether this BigInteger is less than N,
@@ -48,12 +153,23 @@ int BigInteger::compare(const BigInteger& N) const;
 
 // makeZero()
 // Re-sets this BigInteger to the zero state.
-void BigInteger::makeZero();
+void BigInteger::makeZero(){
+	BigInteger C;
+	this -> digits = C.digits;
+	this -> signum = C.signum;
+}
 
 // negate()
 // If this BigInteger is zero, does nothing, otherwise reverses the sign of 
 // this BigInteger positive <--> negative. 
-void BigInteger::negate();
+void BigInteger::negate(){
+	if (signum == 1){
+		signum = -1;
+	}
+	else if (signum == -1){
+		signum = 1;
+	}
+}
 
 
 // BigInteger Arithmetic operations ----------------------------------------
@@ -79,22 +195,22 @@ BigInteger mult(const BigInteger& N) const;
 // will begin with a negative sign '-'. If this BigInteger is zero, the
 // returned string will consist of the character '0' only.
 std::string to_string(){
-	std::string out = "";
+	string output = "";
 	if (signum == 0){
-		out = "0";
-		return out;
+		output = '0';
+		return output;
 	}
 	else if (signum == -1){
-		out += "-";
+		output += "-";
 	}
-	std::string str_list = digits.to_string();
-	//
-	//
-	if (str_list != "0"){
-	//
+	string str_list = digits.to_string();
+	str_list = CleanList(str_list);
+	str_list = LostZeros(str_list);
+	if (str_list ! = '0'){
+		str_list.erase(0, str_list.find_first_not_of('0'));
 	}
-	out += str_list;
-	return out;
+	output += str_list;
+	return output;
 }
 
 
