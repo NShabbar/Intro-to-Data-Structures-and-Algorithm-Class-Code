@@ -57,7 +57,7 @@ std::string LostZeros(std::string str){
 
 
 // goes through string to determine if string is a number.
-bool Numbers(string str){
+bool Numbers(std::string str){
 	for (unsigned long int i = 0; i < str.length(); i++){
 		if (isdigit(str[i]) == false){
 			return false;
@@ -115,7 +115,7 @@ BigInteger::BigInteger(std::string s){
 		if (!Numbers(substring)){
 			throw cerr << "BigInteger: Constructor: non-numeric string" << endl;
 		}else{
-			digits.front();
+			digits.moveFront();
 			digits.insertAfter(stol(substring));
 		}
 		end = beginning - 1;
