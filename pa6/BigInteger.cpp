@@ -15,6 +15,49 @@ const int power = 9;
 const long base = 1000000000;
 
 // Private functions -------------------------------------------------------
+// negateList()
+// Changes the sign of each integer in List L. Used by sub().
+void negateList(List& L){
+	L.moveFront();
+	for (int i = 0; i < L.length(); i++){
+		int j = (L.moveNext() * -1);
+		j = L.setBefore(j);
+	}
+}
+
+// sumList()
+// Overwrites the state of S with A + sgn*B (considered as vectors).
+// Used by both sum() and sub().
+void sumList(List& S, List A, List B, int sgn){
+	A.moveFront();
+	B.moveFront();
+	S.clear();
+	for (int i = 0; i < A.length(); i++){
+		int j = A.moveNext() + (B.moveNext()*sgn);
+		S.insertBefore(j);
+		S.moveNext();
+	}
+}
+
+// normalizeList()
+// Performs carries from right to left (least to most significant
+// digits), then returns the sign of the resulting integer. Used
+// by add(), sub() and mult().
+int normalizeList(List& L);
+
+// shiftList()
+// Prepends p zero digits to L, multiplying L by base^p. Used by mult().
+void shiftList(List& L, int p);
+
+// scalarMultList()
+// Multiplies L (considered as a vector) by m. Used by mult().
+void scalarMultList(List& L, ListElement m){
+	L.moveFront();
+	for (int i = 0; i < L.length(); i++){
+		int j = L.moveNext() * m;
+		L.setBefore(j);
+	}
+}
 
 // removes undesired characters.
 std::string CleanList(std::string str){
@@ -125,7 +168,9 @@ BigInteger::BigInteger(std::string s){
 // BigInteger()   
 // Constructor that creates a copy of N.
 BigInteger::BigInteger(const BigInteger& N){
-	this -> signum = N -> signum;
+	signum = 0;
+	digits = List();
+	this -> signum = N.sign();
 	this -> digits = N -> digits;
 }
 
@@ -146,7 +191,18 @@ int BigInteger::BigInteger::sign() const{
 // compare()
 // Returns -1, 1 or 0 according to whether this BigInteger is less than N,
 // greater than N or equal to N, respectively.
-int BigInteger::compare(const BigInteger& N) const;
+int BigInteger::compare(const BigInteger& N) const{
+	if (A-> digits.equals(B -> digits)){
+		return 0;
+	}
+	if (A.sign() < B.sign()){
+		return -1;
+	}
+	if (A.sign() > B.sign() ){
+		return 1;
+	}
+}
+	
 
 
 // Manipulation procedures -------------------------------------------------
@@ -156,17 +212,17 @@ int BigInteger::compare(const BigInteger& N) const;
 void BigInteger::makeZero(){
 	BigInteger C;
 	this -> digits = C.digits;
-	this -> signum = C.signum;
+	signum = C.sign();
 }
 
 // negate()
 // If this BigInteger is zero, does nothing, otherwise reverses the sign of 
 // this BigInteger positive <--> negative. 
 void BigInteger::negate(){
-	if (signum == 1){
+	if (sign() == 1){
 		signum = -1;
 	}
-	else if (signum == -1){
+	else if (sign() == -1){
 		signum = 1;
 	}
 }
@@ -194,19 +250,19 @@ BigInteger mult(const BigInteger& N) const;
 // base 10 digits. If this BigInteger is negative, the returned string 
 // will begin with a negative sign '-'. If this BigInteger is zero, the
 // returned string will consist of the character '0' only.
-std::string to_string(){
+std::string BigInteger::to_string(){
 	string output = "";
-	if (signum == 0){
+	if (sign() == 0){
 		output = '0';
 		return output;
 	}
-	else if (signum == -1){
+	else if (sign() == -1){
 		output += "-";
 	}
 	string str_list = digits.to_string();
 	str_list = CleanList(str_list);
 	str_list = LostZeros(str_list);
-	if (str_list ! = '0'){
+	if (str_list != '0'){
 		str_list.erase(0, str_list.find_first_not_of('0'));
 	}
 	output += str_list;
@@ -280,10 +336,10 @@ bool operator>=( const BigInteger& A, const BigInteger& B ){
 // operator+()
 // Returns the sum A+B. 
 BigInteger operator+( const BigInteger& A, const BigInteger& B ){
-	if (A.signum == 0){
+	if (A.sign() == 0){
 		return B;
 	}
-	else if (B.signum == 0){
+	else if (B.sign() == 0){
 		return A;
 	}else{
 		BigInteger C = A.add(B);
@@ -296,22 +352,23 @@ BigInteger operator+( const BigInteger& A, const BigInteger& B ){
 BigInteger operator+=( BigInteger& A, const BigInteger& B ){
 	BigInteger C = A.add(B);
 	A.digits = C.digits;
-	A.signum = C.signum;
+	C -> signum = C.sign();
 	return A;
 }
 
 // operator-()
 // Returns the difference A-B. 
 BigInteger operator-( const BigInteger& A, const BigInteger& B ){
-	if (A.signum == 0){
-		B.signum = 1;
+	if (A.sign() == 0){
+		B.sign() = 1; // B.negateList();
 		return B;
 	}
-	else if (B.signum == 0){
+	else if (B.sign() == 0){
 		return A;
 	}
 	else if (A == B){
-		return BigInteger C;
+		BigInteger C;
+		return C;
 	}else{
 		BigInteger C = A.sub(B);
 		return C;
@@ -323,22 +380,22 @@ BigInteger operator-( const BigInteger& A, const BigInteger& B ){
 BigInteger operator-=( BigInteger& A, const BigInteger& B ){
 	BigInteger C = A.sub(B);
 	A.digits = C.digits;
-	A.signum = C.signum;
+	C -> signum = C.sign();
 	return A;
 }
 
 // operator*()
 // Returns the product A*B. 
 BigInteger operator*( const BigInteger& A, const BigInteger& B ){
-	if (A.signum == 0 || B.signum == 0){
+	if (A.sign() == 0 || B.sign() == 0){
 		BigInteger C;
 		return C;
 	}else{
 		BigInteger C = A.mult(B);
-		if (A.signum == B.signum){
-			C.signum = 1;
+		if (A.sign() == B.sign()){
+			C -> signum = 1;
 		}else{
-			C.signum = -1;
+			C -> signum = -1;
 		}
 		return C;
 	}
@@ -349,6 +406,6 @@ BigInteger operator*( const BigInteger& A, const BigInteger& B ){
 BigInteger operator*=( BigInteger& A, const BigInteger& B ){
 	BigInteger C = A.mult(B);
 	A.digits = C.digits;
-	A.signum = C.signum;
+	A -> signum = C.sign();
 	return A;
 }
