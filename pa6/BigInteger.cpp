@@ -21,7 +21,7 @@ const long base = 1000000000;
 void negateList(List& L){
 	L.moveFront();
 	for (int i = 0; i < L.length(); i++){
-		int j = (L.moveNext() * -1);
+		ListElement j = (L.moveNext() * -1);
 		L.setBefore(j);
 	}
 }
@@ -34,17 +34,17 @@ void sumList(List& S, List A, List B, int sgn){
 	B.moveFront();
 	S.clear();
 	while (A.position() < A.length() && B.position() < B.length()){
-		int j = A.moveNext() + (B.moveNext()*sgn);
+		ListElement j = A.moveNext() + (B.moveNext()*sgn);
 		S.insertBefore(j);
 		S.moveNext();
 	}
 	while (A.position() < A.length()){
-		int j = A.moveNext();
+		ListElement j = A.moveNext();
 		S.insertBefore(j);
 		S.moveNext();
 	}
 	while (B.position() < B.length()){
-		int j = (B.moveNext()*sgn);
+		ListElement j = (B.moveNext()*sgn);
 		S.insertBefore(j);
 		S.moveNext();
 	}
@@ -54,7 +54,59 @@ void sumList(List& S, List A, List B, int sgn){
 // Performs carries from right to left (least to most significant
 // digits), then returns the sign of the resulting integer. Used
 // by add(), sub() and mult().
-int normalizeList(List& L);
+int normalizeList(List& L){
+	ListElement carry = 0;
+	int sign = 1;
+	L.moveBack();
+	if (L.front() < 0 ){
+		negateList(L);
+		sign = -1;
+	}
+	for (int i = 0; i < (L.length()-1); i++){
+		ListElement current_num = L.movePrev();
+		if (current_num > (base - 1)){
+			ListElement next_val = L.peekPrev();
+			carry = current_num/base;
+			current_num = current_num - (base*carry);
+			L.setBefore(next_val + carry);
+			L.setAfter(current_num);
+		}
+		else if (current_num < (base - 1)){
+			if (current_num < 0){
+				ListElement next_val = L.peekPrev();
+				carry = current_num/base;
+				current_num = current_num + (base*carry);
+				L.setBefore(next_val + carry);
+				L.setAfter(current_num);
+			}
+		}
+	}
+	ListElement current_num = L.movePrev();
+	if (current_num > (base - 1)){
+			ListElement next_val = L.peekPrev();
+			carry = current_num/base;
+			current_num = current_num - (base*carry);
+			L.insertBefore(next_val + carry);
+			L.setAfter(current_num);
+		}
+	else if (current_num < (base - 1)){
+		if (current_num < 0){
+			ListElement next_val = L.peekPrev();
+			carry = current_num/base;
+			current_num = current_num + (base*carry);
+			L.insertBefore(next_val + carry);
+			L.setAfter(current_num);
+			}
+		}
+	while (L.front() == 0){
+		L.eraseAfter();
+	}
+	if (L.length() == 0){
+		sign = 0;
+		return sign;
+	}
+	return sign;
+}
 
 // shiftList()
 // Prepends p zero digits to L, multiplying L by base^p. Used by mult().
@@ -70,7 +122,7 @@ void shiftList(List& L, int p){
 void scalarMultList(List& L, ListElement m){
 	L.moveFront();
 	for (int i = 0; i < L.length(); i++){
-		int j = L.moveNext() * m;
+		ListElement j = L.moveNext() * m;
 		L.setBefore(j);
 	}
 }
@@ -214,15 +266,39 @@ void BigInteger::negate(){
 
 // add()
 // Returns a BigInteger representing the sum of this and N.
-BigInteger add(const BigInteger& N) const;
+BigInteger BigInteger::add(const BigInteger& N) const{
+	BigInteger C;
+	List addition;
+	int sign;
+	List A_list = this -> digits;
+	List B_list = N.digits;
+	sumList(addition, A_list, B_list, 1);
+	sign = normalizeList(addition);
+	C.digits = addition;
+	C.signum = sign;
+	return C;
+}
 
 // sub()
 // Returns a BigInteger representing the difference of this and N.
-BigInteger sub(const BigInteger& N) const;
+BigInteger BigInteger::sub(const BigInteger& N) const{
+	BigInteger C;
+	List subtract;
+	int sign;
+	List A_list = this -> digits;
+	List B_list = N.digits;
+	sumList(subtract, A_list, B_list, -1);
+	sign = normalizeList(subtract);
+	C.digits = subtract;
+	C.signum = sign;
+	return C;
+}
 
 // mult()
 // Returns a BigInteger representing the product of this and N. 
-BigInteger mult(const BigInteger& N) const;
+BigInteger BigInteger::mult(const BigInteger& N) const{
+	return;
+}
 
 
 // Other Functions ---------------------------------------------------------
