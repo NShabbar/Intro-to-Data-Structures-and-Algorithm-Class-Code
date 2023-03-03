@@ -160,25 +160,27 @@ BigInteger::BigInteger(std::string s){
 	if (s.length() == 0){
 		throw invalid_argument("BigInteger: Constructor: non-numeric string");
 	}
-	if (s[0] != '0'){ // get rid of leading zeros.
+	if (s[0] == '0'){ // get rid of leading zeros.
 		s.erase(0, s.find_first_not_of('0'));
 	}
 	List digits;
 	ListElement substring = 0;
 	string temp = "";
-	for (unsigned long int i = s.length(); i > 0; i--){
+	for (unsigned long int i = (s.length()-1); i > 0; i--){
 		if (!isdigit(s[i])){
 			throw invalid_argument("BigInteger: Constructor: non-numeric string");
 		}
 		temp += s[i];
-		if (temp.length() == power){
+		if ((temp.length()-1) == power){
 			substring = stol(temp);
 			digits.insertAfter(substring);
 			temp = "";
 		}
 	}
-	substring = stol(temp);
-	digits.insertAfter(substring);
+	if (temp.length()){
+		substring = stol(temp);
+		digits.insertAfter(substring);
+	}
 }
 
 // BigInteger()   
@@ -297,7 +299,28 @@ BigInteger BigInteger::sub(const BigInteger& N) const{
 // mult()
 // Returns a BigInteger representing the product of this and N. 
 BigInteger BigInteger::mult(const BigInteger& N) const{
-	return;
+	BigInteger C;
+	List multiplication;
+	int sign;
+	List A_list = this -> digits;
+	List B_list = N.digits;
+	List Shift_list;
+	B_list.moveBack();
+	int shift_zero_count = 0;
+	if (this -> sign() == 0 || N.sign() == 0){
+		return C;
+	}
+	for (int i = (B_list.length() -1 ); i > 0; i--){
+		scalarMultList(A_list, i);
+		shiftList(B_list, shift_zero_count);
+		shift_zero_count++;
+		sumList(multiplication, A_list, B_list, 1);
+		sign = normalizeList(multiplication);
+		B_list.movePrev();
+	}
+	C.digits = multiplication;
+	C.signum = sign;
+	return C;
 }
 
 

@@ -5,6 +5,6 @@
 // Arithmetic.cpp
 // Top Level
 //-----------------------------------------------------------------------------
-void main(){
-	return;
+int main(){
+	return 0;
 }
