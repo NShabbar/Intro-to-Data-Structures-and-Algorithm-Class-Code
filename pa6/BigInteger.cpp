@@ -98,7 +98,8 @@ int normalizeList(List& L){
 			L.setAfter(current_num);
 			}
 		}
-	while (L.front() == 0){
+	L.moveFront();
+	while (L.length() && L.front() == 0){
 		L.eraseAfter();
 	}
 	if (L.length() == 0){
@@ -276,16 +277,17 @@ void BigInteger::negate(){
 BigInteger BigInteger::add(const BigInteger& N) const{
 	BigInteger C;
 	List addition;
-	int sign = this -> compare(N);
+	int sign = N.signum;
 	List A_list = this -> digits;
 	List B_list = N.digits;
-	cout<<"A_list: "<<A_list<<endl;
-	cout<<"B_list: "<<B_list<<endl;
-	cout<<"Sign: "<<sign<<endl;
-	if (sign != 0){
-		sumList(addition, A_list, B_list, sign);
-		sign = normalizeList(addition);
+	if (this -> sign() == -1){
+		negateList(A_list);
 	}
+	if (sign == -1){
+		negateList(B_list);
+	}
+	sumList(addition, A_list, B_list, 1);
+	sign = normalizeList(addition);
 	C.digits = addition;
 	C.signum = sign;
 	return C;
@@ -296,13 +298,17 @@ BigInteger BigInteger::add(const BigInteger& N) const{
 BigInteger BigInteger::sub(const BigInteger& N) const{
 	BigInteger C;
 	List subtract;
-	int sign = this -> compare(N);
+	int sign = N.signum;
 	List A_list = this -> digits;
 	List B_list = N.digits;
-	if (sign != 0){
-		sumList(subtract, A_list, B_list, sign);
-		sign = normalizeList(subtract);
+	if (this -> sign() == -1){
+		negateList(A_list);
 	}
+	if (sign == -1){
+		negateList(B_list);
+	}
+	sumList(subtract, A_list, B_list, -1);
+	sign = normalizeList(subtract);
 	C.digits = subtract;
 	C.signum = sign;
 	return C;
@@ -321,6 +327,12 @@ BigInteger BigInteger::mult(const BigInteger& N) const{
 	int shift_zero_count = 0;
 	if (this -> sign() == 0 || N.sign() == 0){
 		return C;
+	}
+	if (this -> sign() == -1){
+		negateList(A_list);
+	}
+	if (N.sign() == -1){
+		negateList(B_list);
 	}
 	for (int i = (B_list.length() -1 ); i > 0; i--){
 		scalarMultList(A_list, i);

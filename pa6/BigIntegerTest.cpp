@@ -71,7 +71,7 @@ int main()
 
     // pos + pos = pos
     D = BigInteger("+333333333333");
-    A.add(B);
+	C = A + B;
 	//cout<<"C "<<C<<endl;
 
     A = BigInteger("+111122223333");
