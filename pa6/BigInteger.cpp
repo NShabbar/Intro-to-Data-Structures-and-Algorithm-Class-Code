@@ -5,6 +5,7 @@
 // BigInteger.cpp
 // implementation for BigInteger ADT
 //-----------------------------------------------------------------------------
+#include <algorithm> 
 #include<iostream>
 #include<string>
 #include <stdexcept>
@@ -33,20 +34,22 @@ void sumList(List& S, List A, List B, int sgn){
 	A.moveFront();
 	B.moveFront();
 	S.clear();
+	S.moveFront();
+	int count = 0;
 	while (A.position() < A.length() && B.position() < B.length()){
 		ListElement j = A.moveNext() + (B.moveNext()*sgn);
+		cout<<"j: "<<j<<endl;
 		S.insertBefore(j);
-		S.moveNext();
 	}
 	while (A.position() < A.length()){
+		cout<<"Second loop."<<endl;
 		ListElement j = A.moveNext();
 		S.insertBefore(j);
-		S.moveNext();
 	}
 	while (B.position() < B.length()){
+		cout<<"Third loop."<<endl;
 		ListElement j = (B.moveNext()*sgn);
 		S.insertBefore(j);
-		S.moveNext();
 	}
 }
 
@@ -163,24 +166,31 @@ BigInteger::BigInteger(std::string s){
 	if (s[0] == '0'){ // get rid of leading zeros.
 		s.erase(0, s.find_first_not_of('0'));
 	}
-	List digits;
 	ListElement substring = 0;
 	string temp = "";
-	for (unsigned long int i = (s.length()-1); i > 0; i--){
-		if (!isdigit(s[i])){
+	for (unsigned long int i = (s.length()); i > 0; i--){
+		if (!isdigit(s[i-1])){
 			throw invalid_argument("BigInteger: Constructor: non-numeric string");
 		}
-		temp += s[i];
-		if ((temp.length()-1) == power){
+		temp += s[i-1];
+		//cout<<temp<<endl;
+		if ((temp.length()) == power){
+			reverse(temp.begin(), temp.end());
 			substring = stol(temp);
 			digits.insertAfter(substring);
+			//cout<<temp.length()<<endl;
+			//cout<<"temp in loop: " <<temp<<endl;
 			temp = "";
 		}
 	}
+	//cout<<"temp length after the loop: "<<temp.length()<<endl;
 	if (temp.length()){
+		reverse(temp.begin(), temp.end());
 		substring = stol(temp);
 		digits.insertAfter(substring);
+		//cout<<"temp left over: "<<temp<<endl;
 	}
+	//cout<<digits<<endl;
 }
 
 // BigInteger()   
@@ -340,18 +350,23 @@ std::string BigInteger::to_string(){
 	else if (sign() == -1){
 		output += "-";
 	}
-
+	//cout<<"output before loop: "<<output<<endl;
 	List dig = digits;
+	//cout<<"digit list before loop: "<<dig<<endl;
 	dig.moveFront();
 	while (dig.position() < dig.length()){
 		ListElement num = dig.moveNext();
+		//cout<<"num move next value: "<<num<<endl;
 		string num_str = std::to_string(num);
+		//cout<<"num string value: "<<num_str<<endl;
 		if (dig.position() > 1 && num_str.length() < power){
 			for (int i = 0; i < (power - (int)num_str.length()); i++){
 				output += '0';
+				//cout<<"output in the 0 loop: "<<output<<endl;
 			}
 		}
 		output += num_str;
+		//cout<<"output end of loop: "<<output<<endl;
 	}
 	return output;
 }

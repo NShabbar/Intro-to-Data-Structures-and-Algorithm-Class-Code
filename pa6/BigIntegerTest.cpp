@@ -12,6 +12,10 @@
 using namespace std;
 int main()
 {
+	BigInteger A;
+	BigInteger B;
+	BigInteger C;
+	BigInteger D;
     string bar="1235679238312087451";
     BigInteger foo(bar);
     cout<<"original string: "<<bar<<endl;
@@ -59,4 +63,16 @@ int main()
     
     cout<<"BigInt 1: "<<BIc1<<endl;
     cout<<"BigInt 2: "<<BIc2<<endl;
+	
+	A = BigInteger("+111122223333");
+    B = BigInteger("+222211110000");
+	cout<<"A: "<<A<<endl;
+    cout<<"B: "<<B<<endl;
+
+    // pos + pos = pos
+    D = BigInteger("+333333333333");
+    C = A + B;
+
+    if (!(C == D))
+      return 1;
 }
