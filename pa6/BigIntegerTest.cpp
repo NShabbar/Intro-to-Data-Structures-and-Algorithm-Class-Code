@@ -71,8 +71,14 @@ int main()
 
     // pos + pos = pos
     D = BigInteger("+333333333333");
-    C = A + B;
+    A.add(B);
+	//cout<<"C "<<C<<endl;
 
-    if (!(C == D))
-      return 1;
+    A = BigInteger("+111122223333");
+    B = BigInteger("-111122223333");
+    A += B;
+	cout<<"A: "<<A<<endl;
+	cout<<"A sign: "<<A.sign()<<endl;
+    if (A.sign() != 0)
+      return 2;
 }

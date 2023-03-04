@@ -35,22 +35,19 @@ void sumList(List& S, List A, List B, int sgn){
 	B.moveFront();
 	S.clear();
 	S.moveFront();
-	int count = 0;
 	while (A.position() < A.length() && B.position() < B.length()){
 		ListElement j = A.moveNext() + (B.moveNext()*sgn);
-		cout<<"j: "<<j<<endl;
 		S.insertBefore(j);
 	}
 	while (A.position() < A.length()){
-		cout<<"Second loop."<<endl;
 		ListElement j = A.moveNext();
 		S.insertBefore(j);
 	}
 	while (B.position() < B.length()){
-		cout<<"Third loop."<<endl;
 		ListElement j = (B.moveNext()*sgn);
 		S.insertBefore(j);
 	}
+	cout<<"S: "<<S<<endl;
 }
 
 // normalizeList()
@@ -173,24 +170,18 @@ BigInteger::BigInteger(std::string s){
 			throw invalid_argument("BigInteger: Constructor: non-numeric string");
 		}
 		temp += s[i-1];
-		//cout<<temp<<endl;
 		if ((temp.length()) == power){
 			reverse(temp.begin(), temp.end());
 			substring = stol(temp);
 			digits.insertAfter(substring);
-			//cout<<temp.length()<<endl;
-			//cout<<"temp in loop: " <<temp<<endl;
 			temp = "";
 		}
 	}
-	//cout<<"temp length after the loop: "<<temp.length()<<endl;
 	if (temp.length()){
 		reverse(temp.begin(), temp.end());
 		substring = stol(temp);
 		digits.insertAfter(substring);
-		//cout<<"temp left over: "<<temp<<endl;
 	}
-	//cout<<digits<<endl;
 }
 
 // BigInteger()   
@@ -225,16 +216,20 @@ int BigInteger::compare(const BigInteger& N) const{
 	A.moveFront();
 	B.moveFront();
 	if (this -> sign() < N.sign()){
-		return -1;
+		if (A.length() > B.length()){
+			return -1;
+		}
+		else if (A.length() < B.length()){
+			return 1;
+		}
 	}
-	else if (this -> sign() > N.sign() ){
-		return 1;
-	}
-	if (A.length() > B.length()){
-		return 1;
-	}
-	else if (A.length() < B.length()){
-		return -1;
+	else if (this -> sign() > N.sign()){
+		if (A.length() > B.length()){
+			return 1;
+		}
+		else if (A.length() < B.length()){
+			return -1;
+		}
 	}
 	while (A.position() < A.length()){
 		ListElement num1 = A.moveNext();
@@ -281,11 +276,16 @@ void BigInteger::negate(){
 BigInteger BigInteger::add(const BigInteger& N) const{
 	BigInteger C;
 	List addition;
-	int sign;
+	int sign = this -> compare(N);
 	List A_list = this -> digits;
 	List B_list = N.digits;
-	sumList(addition, A_list, B_list, 1);
-	sign = normalizeList(addition);
+	cout<<"A_list: "<<A_list<<endl;
+	cout<<"B_list: "<<B_list<<endl;
+	cout<<"Sign: "<<sign<<endl;
+	if (sign != 0){
+		sumList(addition, A_list, B_list, sign);
+		sign = normalizeList(addition);
+	}
 	C.digits = addition;
 	C.signum = sign;
 	return C;
@@ -296,11 +296,13 @@ BigInteger BigInteger::add(const BigInteger& N) const{
 BigInteger BigInteger::sub(const BigInteger& N) const{
 	BigInteger C;
 	List subtract;
-	int sign;
+	int sign = this -> compare(N);
 	List A_list = this -> digits;
 	List B_list = N.digits;
-	sumList(subtract, A_list, B_list, -1);
-	sign = normalizeList(subtract);
+	if (sign != 0){
+		sumList(subtract, A_list, B_list, sign);
+		sign = normalizeList(subtract);
+	}
 	C.digits = subtract;
 	C.signum = sign;
 	return C;
