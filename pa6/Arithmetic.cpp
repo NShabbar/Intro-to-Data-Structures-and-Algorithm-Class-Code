@@ -14,15 +14,6 @@
 #include<iostream>
 #include<fstream>
 using namespace std;
-BigInteger Exponent(BigInteger A, int e){
-	BigInteger res;
-	while (e != 0) {
-        res = res * A;
-        --e;
-    }
-	return res;
-}
-
 int main(int argc, char* argv[]){
 	ifstream in;
 	ofstream out;
@@ -73,14 +64,14 @@ int main(int argc, char* argv[]){
    C = A * B;
    out<<C<<endl<<endl;
    
-   C = Exponent(A, 2);
+   C = A * A;
    out<<C<<endl<<endl;
    
-   C = Exponent(B, 2);
+   C = B * B;
    out<<C<<endl<<endl;
    
    BigInteger nine("9");
    BigInteger sixT("16");
-   C = (nine*Exponent(A, 4)) + (sixT*Exponent(B, 5));
+   C = (nine*(A * A * A * A)) + (sixT*(B * B * B * B * B));
    out<<C<<endl<<endl;
 }

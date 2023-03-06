@@ -53,6 +53,14 @@ void sumList(List& S, List A, List B, int sgn){
 // digits), then returns the sign of the resulting integer. Used
 // by add(), sub() and mult().
 int normalizeList(List& L){
+	L.moveFront();
+    while (L.peekNext() == 0 && L.position() < L.length()){
+        L.eraseAfter();
+    }
+    if (L.length() == 0){
+        L.clear();
+        return 0;
+    }
 	ListElement carry = 0;
 	int sign = 1;
 	L.moveBack();
@@ -60,49 +68,55 @@ int normalizeList(List& L){
 		negateList(L);
 		sign = -1;
 	}
+	ListElement next_val, current_num;
 	for (int i = 0; i < (L.length() - 1); i++){
-		ListElement current_num = L.movePrev();
+		current_num = L.movePrev();
 		if (current_num > (base - 1)){
-			ListElement next_val = L.peekPrev();
+			next_val = L.peekPrev();
 			carry = current_num/base;
-			current_num = current_num - (base*carry);
-			L.setBefore(next_val + carry);
+			current_num -= (base*carry);
+			next_val += carry;
+			L.setBefore(next_val);
 			L.setAfter(current_num);
 		}
-		else if (current_num < (base - 1)){
-			if (current_num < 0){
-				ListElement next_val = L.peekPrev();
-				carry = (current_num/base)* -1;
-				current_num = current_num + ((base*carry) + base);
-				L.setBefore((next_val + carry) + 1);
+		else if (current_num < 0){
+			next_val = L.peekPrev();
+			carry = (current_num/base);
+			if (carry == 0){
+				current_num += base;
+				next_val--;
+			}else{
+				current_num += (base * carry * -1) + base;
+				next_val -= (carry * -1) + 1;
+			}
+			L.setBefore(next_val);
+			L.setAfter(current_num);
+		}
+	}
+	current_num = L.movePrev();
+	if (current_num > (base - 1)){
+			next_val = 0;
+			carry = current_num/base;
+			current_num -= (base*carry);
+			L.insertBefore(carry);
+			L.setAfter(current_num);
+		}
+	else if (current_num < 0){
+			carry = (current_num/base);
+			if (carry == 0){
+				L.setAfter(current_num * -1);
+				sign = -1;
+			}else{
+				current_num += (base * carry * -1);
+				L.insertBefore(carry);
 				L.setAfter(current_num);
 			}
 		}
-	}
-	ListElement current_num = L.movePrev();
-	if (current_num > (base - 1)){
-			ListElement next_val = L.peekPrev();
-			carry = current_num/base;
-			current_num = current_num - (base*carry);
-			L.insertBefore(next_val + carry);
-			L.setAfter(current_num);
-		}
-	else if (current_num < (base - 1)){
-		if (current_num < 0){
-			ListElement next_val = L.peekPrev();
-			carry = (current_num/base) * -1;
-			current_num = current_num + ((base*carry) + base);
-			L.insertBefore((next_val + carry) + 1);
-			L.setAfter(current_num);
-			}
-		}
-	L.moveFront();
-	while (L.length() && L.front() == 0){
+	while (L.front() == 0){
 		L.eraseAfter();
-	}
-	if (L.length() == 0){
-		sign = 0;
-		return sign;
+		if (L.length() == 0){
+			return 0;
+		}
 	}
 	return sign;
 }
@@ -330,9 +344,9 @@ BigInteger BigInteger::mult(const BigInteger& N) const{
 	if (this -> sign() == -1){
 		negateList(A_list);
 	}
-/* 	if (N.sign() == -1){
+	if (N.sign() == -1){
 		negateList(B_list);
-	} */
+	}
 	if ((this -> sign() == 1 && N.sign() == 1) || (this -> sign()== -1 && N.sign() == -1)){
 		C.signum = 1;
 	}
@@ -341,9 +355,9 @@ BigInteger BigInteger::mult(const BigInteger& N) const{
 	}
 	for (B_list.moveBack(); B_list.position() > 0; B_list.movePrev()){
 		C_list = A_list;
-		scalarMultList(C_list, B_list.movePrev());
+		scalarMultList(C_list, B_list.peekPrev());
 		shiftList(C_list, shift_zero_count);
-		sumList(multiplication, D_list, C_list, 1);
+		sumList(multiplication, D_list, C_list, N.sign());
 		D_list = multiplication;
 		if (shift_zero_count % 9 == 0){
 			sign = normalizeList(D_list);

@@ -1,18 +1,26 @@
 # Nadia Shabbar #
 # nshabbar #
-# pa5 #
+# pa6 #
 
 List.h written by professor:
 used in List.cpp to define functions.
 
 List.cpp written by me:
-used in Shuffle.cpp to sort array strings.
+used in BigInteger.cpp to sort array strings.
 
 ListTest.cpp written by me:
 used to test List.cpp.
 
-Shuffle.cpp written by me
-Makefile provided on webpage, alter as needed
+BigInteger.cpp written by me:
+used in Arithmetic.cpp to perform math on very large numbers.
+
+BigIntegerTest.cpp written by me:
+used to test BigInteger.cpp.
+
+Arithmetic.cpp written by me
+
+Makefile provided on webpage, altered as needed
+
 README written by me
 
 I had extra help from tutors, the professor, and my friend Tristen Miller.
