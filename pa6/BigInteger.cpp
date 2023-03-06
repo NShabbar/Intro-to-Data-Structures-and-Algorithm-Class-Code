@@ -31,23 +31,21 @@ void negateList(List& L){
 // Overwrites the state of S with A + sgn*B (considered as vectors).
 // Used by both sum() and sub().
 void sumList(List& S, List A, List B, int sgn){
-	A.moveFront();
-	B.moveFront();
+	A.moveBack();
+	B.moveBack();
 	S.clear();
-	S.moveFront();
-	while (A.position() < A.length() && B.position() < B.length()){
-		ListElement j = A.moveNext() + (B.moveNext()*sgn);
-		S.insertBefore(j);
+	while (A.position() > 0 && B.position() > 0){
+		ListElement j = A.movePrev() + (B.movePrev()*sgn);
+		S.insertAfter(j);
 	}
-	while (A.position() < A.length()){
-		ListElement j = A.moveNext();
-		S.insertBefore(j);
+	while (A.position() > 0){
+		ListElement j = A.movePrev();
+		S.insertAfter(j);
 	}
-	while (B.position() < B.length()){
-		ListElement j = (B.moveNext()*sgn);
-		S.insertBefore(j);
+	while (B.position() > 0){
+		ListElement j = (B.movePrev()*sgn);
+		S.insertAfter(j);
 	}
-	cout<<"S: "<<S<<endl;
 }
 
 // normalizeList()
@@ -62,7 +60,7 @@ int normalizeList(List& L){
 		negateList(L);
 		sign = -1;
 	}
-	for (int i = 0; i < (L.length()-1); i++){
+	for (int i = 0; i < (L.length() - 1); i++){
 		ListElement current_num = L.movePrev();
 		if (current_num > (base - 1)){
 			ListElement next_val = L.peekPrev();
@@ -74,9 +72,9 @@ int normalizeList(List& L){
 		else if (current_num < (base - 1)){
 			if (current_num < 0){
 				ListElement next_val = L.peekPrev();
-				carry = current_num/base;
-				current_num = current_num + (base*carry);
-				L.setBefore(next_val + carry);
+				carry = (current_num/base)* -1;
+				current_num = current_num + ((base*carry) + base);
+				L.setBefore((next_val + carry) + 1);
 				L.setAfter(current_num);
 			}
 		}
@@ -92,9 +90,9 @@ int normalizeList(List& L){
 	else if (current_num < (base - 1)){
 		if (current_num < 0){
 			ListElement next_val = L.peekPrev();
-			carry = current_num/base;
-			current_num = current_num + (base*carry);
-			L.insertBefore(next_val + carry);
+			carry = (current_num/base) * -1;
+			current_num = current_num + ((base*carry) + base);
+			L.insertBefore((next_val + carry) + 1);
 			L.setAfter(current_num);
 			}
 		}
@@ -233,8 +231,8 @@ int BigInteger::compare(const BigInteger& N) const{
 		}
 	}
 	while (A.position() < A.length()){
-		ListElement num1 = A.moveNext();
-		ListElement num2 = B.moveNext();
+		ListElement num1 = A.moveNext()*(this -> sign());
+		ListElement num2 = B.moveNext()*(N.sign());
 		if (num1 != num2){
 			if (num1 > num2){
 				return 1;
@@ -322,8 +320,9 @@ BigInteger BigInteger::mult(const BigInteger& N) const{
 	int sign;
 	List A_list = this -> digits;
 	List B_list = N.digits;
+	List C_list, D_list;
 	List Shift_list;
-	B_list.moveBack();
+	
 	int shift_zero_count = 0;
 	if (this -> sign() == 0 || N.sign() == 0){
 		return C;
@@ -331,19 +330,31 @@ BigInteger BigInteger::mult(const BigInteger& N) const{
 	if (this -> sign() == -1){
 		negateList(A_list);
 	}
-	if (N.sign() == -1){
+/* 	if (N.sign() == -1){
 		negateList(B_list);
+	} */
+	if ((this -> sign() == 1 && N.sign() == 1) || (this -> sign()== -1 && N.sign() == -1)){
+		C.signum = 1;
 	}
-	for (int i = (B_list.length() -1 ); i > 0; i--){
-		scalarMultList(A_list, i);
-		shiftList(B_list, shift_zero_count);
+	else if ((this -> sign() == -1 && N.sign() == 1) || (this -> sign()== 1 && N.sign() == -1)){
+		C.signum = -1;
+	}
+	for (B_list.moveBack(); B_list.position() > 0; B_list.movePrev()){
+		C_list = A_list;
+		scalarMultList(C_list, B_list.movePrev());
+		shiftList(C_list, shift_zero_count);
+		sumList(multiplication, D_list, C_list, 1);
+		D_list = multiplication;
+		if (shift_zero_count % 9 == 0){
+			sign = normalizeList(D_list);
+			if (sign == -1){
+				negateList(D_list);
+			}
+		}
 		shift_zero_count++;
-		sumList(multiplication, A_list, B_list, 1);
-		sign = normalizeList(multiplication);
-		B_list.movePrev();
 	}
-	C.digits = multiplication;
-	C.signum = sign;
+	normalizeList(D_list);
+	C.digits = D_list;
 	return C;
 }
 

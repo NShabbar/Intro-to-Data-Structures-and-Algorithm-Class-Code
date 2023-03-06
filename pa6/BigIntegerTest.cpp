@@ -10,75 +10,69 @@
 #include <string>
 #include "List.h"
 using namespace std;
-int main()
-{
-	BigInteger A;
-	BigInteger B;
-	BigInteger C;
-	BigInteger D;
-    string bar="1235679238312087451";
-    BigInteger foo(bar);
-    cout<<"original string: "<<bar<<endl;
-    cout<<"Big int to string: "<<foo<<endl;
-    string test = "-1231593872469213874982710412873487086087351024";
-    BigInteger foo2(test);
-    cout<<"original string: "<<test<<endl;
-    cout<<"Big int to_string: "<<foo2<<endl;
-    string test2="000000007";
-    BigInteger BI(test2);
-    cout<<"original string: "<<test2<<endl;
-    cout<<"Big int to_string(): "<<BI<<endl;
-    string test3=test2+test2;
-    cout<<"original string: "<<test3<<endl;
-    BigInteger BI2(test3);
-    cout<<"Big int to_string(): "<<BI2<<endl;
-    string test4="80000"+test3;
-    cout<<"original string: "<<test4<<endl;
-    BigInteger BI3(test4);
-    cout<<"Big int to_string(): "<<BI3<<endl;
-    string test5="12456sd903827";
-    try{
-        BigInteger BI4(test5);
-    }catch(const invalid_argument& e){
-        cout<<"Constructor correctly catches non-numeric in the middle"<<endl;
-    }
-
-    string test6 = "O00000077777777777777788888888889999999999999";
-    try{
-        BigInteger BI5(test6);
-    }catch(const invalid_argument& e){
-        cout<<"Construtor correctly catches non-numeric in front"<<endl;
-    }    
-    string test7= "000000000000000000000000008888888888888888888888887777777777777777a";
-    try{
-        BigInteger BI6(test7);
-    }catch(const invalid_argument& e){
-        cout<<"Constructor correctly catches non-numeric in rear"<<endl;
-    }
-    
-    string compare1 = "123456789098764321";
-    string compare2 = "999999992222222222";
-    BigInteger BIc1(compare1);
-    BigInteger BIc2(compare2);
-    
-    cout<<"BigInt 1: "<<BIc1<<endl;
-    cout<<"BigInt 2: "<<BIc2<<endl;
+int main(){
 	
-	A = BigInteger("+111122223333");
-    B = BigInteger("+222211110000");
+	cout<<"Testing BigInteger String Conversion, no sign: "<<endl<<endl;
+    string str1="1111111111222222223333333";
+    BigInteger A(str1);
+    cout<<"String: "<<str1<<endl;
+    cout<<"BigInteger(string): "<<A<<endl;
+	
+	cout<<"Testing BigInteger String Conversion, negative sign: "<<endl<<endl;
+    string str2 = "-1111111111222222223333333";
+    BigInteger B(str2);
+    cout<<"String: "<<str2<<endl;
+    cout<<"BigInteger(string): "<<B<<endl;
+	
+	cout<<"Testing BigInteger String Conversion, leading zeros: "<<endl<<endl;
+    string str3 ="000000000000000012312310";
+    BigInteger C(str3);
+    cout<<"String: "<<str3<<endl;
+    cout<<"BigInteger(string): "<<C<<endl;
+	
+	cout<<"Testing add, pos. and neg.: "<<endl<<endl;
 	cout<<"A: "<<A<<endl;
-    cout<<"B: "<<B<<endl;
-
-    // pos + pos = pos
-    D = BigInteger("+333333333333");
-	C = A + B;
-	//cout<<"C "<<C<<endl;
-
-    A = BigInteger("+111122223333");
-    B = BigInteger("-111122223333");
-    A += B;
+	cout<<"B: "<<B<<endl;
+    BigInteger D = A+B;
+    cout<<"D = A+B: "<<D<<endl;
+	
+	cout<<"Testing add, pos. and pos. with many zeros: "<<endl<<endl;
+	BigInteger A1("0000000100000");
+	BigInteger B1("1000000000001");
 	cout<<"A: "<<A<<endl;
-	cout<<"A sign: "<<A.sign()<<endl;
-    if (A.sign() != 0)
-      return 2;
+	cout<<"B: "<<B<<endl;
+    BigInteger D1 = A1+B1;
+    cout<<"D = A+B: "<<D<<endl;
+	
+	cout<<"Testing add, pos. and pos. with different lengths: "<<endl<<endl;
+	BigInteger A2("0000000100000");
+	BigInteger B2("1000000000001000");
+	cout<<"A: "<<A<<endl;
+	cout<<"B: "<<B<<endl;
+    BigInteger D2 = A2+B2;
+    cout<<"D = A+B: "<<D<<endl;
+	
+	cout<<"Testing sub, pos. and pos.: "<<endl<<endl;
+	cout<<"A: "<<A<<endl;
+	cout<<"B: "<<B<<endl;
+    D = A-B;
+    cout<<"D = A-B: "<<D<<endl;
+	
+	cout<<"Testing sub, pos. and neg.: "<<endl<<endl;
+	cout<<"A: "<<A<<endl;
+	cout<<"B: "<<B<<endl;
+    D = A-B;
+    cout<<"D = A-B: "<<D<<endl;
+	
+	cout<<"Testing mult, pos. and neg.: "<<endl<<endl;
+	cout<<"A: "<<A<<endl;
+	cout<<"B: "<<B<<endl;
+    D = A-B;
+    cout<<"D = A-B: "<<D<<endl;
+
+	cout<<"Testing mult, pos. and pos.: "<<endl<<endl;
+	cout<<"A: "<<A2<<endl;
+	cout<<"B: "<<B2<<endl;
+    D = A2-B2;
+    cout<<"D = A-B: "<<D<<endl;
 }
