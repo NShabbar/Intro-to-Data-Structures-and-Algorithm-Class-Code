@@ -7,61 +7,135 @@
 //-----------------------------------------------------------------------------  
 #include<iostream>
 #include<string>
+#include<stdexcept>
+#include"Dictionary.h"
    
 // Helper Functions (Optional) ---------------------------------------------
 
 // inOrderString()
 // Appends a string representation of the tree rooted at R to string s. The// string appended consists of: "key : value \n" for each key-value pair in
 // tree R, arranged in order by keys.
-void inOrderString(std::string& s, Node* R) const;
+void inOrderString(std::string& s, Node* R) const{
+	if (R != nil){
+		inOrderString(R.left);
+		cout<<R.key<<endl;
+		inOrderString(R.right);
+	}
+}
 
 // preOrderString()
 // Appends a string representation of the tree rooted at R to s. The appended
 // string consists of keys only, separated by "\n", with the order determined
 // by a pre-order tree walk.
-void preOrderString(std::string& s, Node* R) const;
+void preOrderString(std::string& s, Node* R) const{
+	if (R != nil){
+		cout<<R.key<<endl;
+		preOrderString(R.left);
+		preOrderString(R.right);
+	}
+}
 
 // preOrderCopy()
 // Recursively inserts a deep copy of the subtree rooted at R into this 
 // Dictionary. Recursion terminates at N.
-void preOrderCopy(Node* R, Node* N);
+void preOrderCopy(Node* R, Node* N){
+	if (R != nil){
+		N.key = R.key;
+	}
+}
 
 // postOrderDelete()
 // Deletes all Nodes in the subtree rooted at R, sets R to nil.
-void postOrderDelete(Node* R);
+void postOrderDelete(Node* R){
+	if (R != nil){
+		postOrderDelete(R.left);
+		postOrderDelete(R.right);
+		delete(R.key);
+	}
+}
 
 // search()
 // Searches the subtree rooted at R for a Node with key==k. Returns
 // the address of the Node if it exists, returns nil otherwise.
-Node* search(Node* R, keyType k) const;
+Node* search(Node* R, keyType k) const{
+	if (R == nil || k == R.key){
+		return R;
+	}
+	else if (k < R.key){
+		return search(R.left, k);
+	}else{
+		return search(R.right, k);
+	}
+}
 
 // findMin()
 // If the subtree rooted at R is not empty, returns a pointer to the 
 // leftmost Node in that subtree, otherwise returns nil.
-Node* findMin(Node* R);
+Node* findMin(Node* R){
+	if (R != nil){
+		while (R.left != nil){
+			R = R.left;	
+		}
+		return R;
+	}
+}
 
 // findMax()
 // If the subtree rooted at R is not empty, returns a pointer to the 
 // rightmost Node in that subtree, otherwise returns nil.
-Node* findMax(Node* R);
+Node* findMax(Node* R){
+	if (R != nil){
+		while (R.right != nil){
+			R = R.right;
+		}
+		return R;
+	}
+}
 
 // findNext()
 // If N does not point to the rightmost Node, returns a pointer to the
 // Node after N in an in-order tree walk.  If N points to the rightmost 
 // Node, or is nil, returns nil. 
-Node* findNext(Node* N);
+Node* findNext(Node* N){
+	if (N.right != nil){
+		return findMin(N.right);
+	}
+	Node y = N.parent;
+	while (y != nil && N == y.right){
+		N = y;
+		y = y.parent;
+	}
+	return y;
+}
 
 // findPrev()
 // If N does not point to the leftmost Node, returns a pointer to the
 // Node before N in an in-order tree walk.  If N points to the leftmost 
 // Node, or is nil, returns nil.
-Node* findPrev(Node* N);
+Node* findPrev(Node* N){
+	if (N.left != nil){
+		return findMax(N.left);
+	}
+	Node y = N.parent;
+	while (y != nil && N == y.left){
+		N = y;
+		y = y.parent;
+	}
+	return y;
+}
    
    
 // Class Constructors & Destructors ----------------------------------------
-   
+
 // Creates new Dictionary in the empty state. 
-Dictionary::Dictionary();
+Dictionary::Dictionary(){
+	nil = newNode("nil", 0);
+	nil -> left = nil;
+	nil -> right = nil;
+	current = nil;
+	root = nil;
+	num_pairs = 0;
+}
 
 // Copy constructor.
 Dictionary::Dictionary(const Dictionary& D);
@@ -74,7 +148,9 @@ Dictionary::~Dictionary();
 
 // size()
 // Returns the size of this Dictionary.
-int Dictionary::size() const;
+int Dictionary::size() const{
+	return num_pairs;
+}
 
 // contains()
 // Returns true if there exists a pair such that key==k, and returns false
