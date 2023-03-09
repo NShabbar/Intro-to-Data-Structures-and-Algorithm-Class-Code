@@ -5,3 +5,6 @@
 // DictionaryTest.cpp
 // Test file for Dictionary.cpp
 //-----------------------------------------------------------------------------
+int main(){
+	return;
+}
