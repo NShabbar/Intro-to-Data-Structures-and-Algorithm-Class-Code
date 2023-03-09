@@ -9,18 +9,21 @@
 #include<string>
 #include<stdexcept>
 #include"Dictionary.h"
-   
+
+using namespace std;
 // Helper Functions (Optional) ---------------------------------------------
 
 // inOrderString()
-// Appends a string representation of the tree rooted at R to string s. The// string appended consists of: "key : value \n" for each key-value pair in
+// Appends a string representation of the tree rooted at R to string s. The
+// string appended consists of: "key : value \n" for each key-value pair in
 // tree R, arranged in order by keys.
 void inOrderString(std::string& s, Node* R) const{
+	s = "key: ";
 	if (R != nil){
 		inOrderString(R.left);
 		cout<<R.key<<endl;
 		inOrderString(R.right);
-	}
+	}	//not finished.
 }
 
 // preOrderString()
@@ -32,7 +35,7 @@ void preOrderString(std::string& s, Node* R) const{
 		cout<<R.key<<endl;
 		preOrderString(R.left);
 		preOrderString(R.right);
-	}
+	}	//not finished.
 }
 
 // preOrderCopy()
@@ -41,7 +44,7 @@ void preOrderString(std::string& s, Node* R) const{
 void preOrderCopy(Node* R, Node* N){
 	if (R != nil){
 		N.key = R.key;
-	}
+	}	//not finished.
 }
 
 // postOrderDelete()
@@ -51,7 +54,7 @@ void postOrderDelete(Node* R){
 		postOrderDelete(R.left);
 		postOrderDelete(R.right);
 		delete(R.key);
-	}
+	}	//not finished.
 }
 
 // search()
@@ -65,7 +68,7 @@ Node* search(Node* R, keyType k) const{
 		return search(R.left, k);
 	}else{
 		return search(R.right, k);
-	}
+	}	//not finished.
 }
 
 // findMin()
@@ -77,7 +80,7 @@ Node* findMin(Node* R){
 			R = R.left;	
 		}
 		return R;
-	}
+	}	//not finished.
 }
 
 // findMax()
@@ -89,7 +92,7 @@ Node* findMax(Node* R){
 			R = R.right;
 		}
 		return R;
-	}
+	}	//not finished.
 }
 
 // findNext()
@@ -105,7 +108,7 @@ Node* findNext(Node* N){
 		N = y;
 		y = y.parent;
 	}
-	return y;
+	return y;	//not finished.
 }
 
 // findPrev()
@@ -121,11 +124,18 @@ Node* findPrev(Node* N){
 		N = y;
 		y = y.parent;
 	}
-	return y;
+	return y;	//not finished.
 }
    
    
 // Class Constructors & Destructors ----------------------------------------
+Dictionary::Node(keyType k, valType v){
+	key = k;
+	val = v;
+	parent -> nil;
+	left -> nil;
+	right -> nil;
+}
 
 // Creates new Dictionary in the empty state. 
 Dictionary::Dictionary(){
@@ -138,7 +148,20 @@ Dictionary::Dictionary(){
 }
 
 // Copy constructor.
-Dictionary::Dictionary(const Dictionary& D);
+Dictionary::Dictionary(const Dictionary& D){
+	nil = newNode("nil", 0);
+	nil -> left = nil;
+	nil -> right = nil;
+	current = nil;
+	root = nil;
+	num_pairs = 0;
+	
+	Node* N = D.key;
+	for (int i = 0; i != D.size(); i++){
+		this -> setValue(D.key, D.val);
+		D.next();
+	}	//not finished.
+}
 
 // Destructor
 Dictionary::~Dictionary();
@@ -155,12 +178,30 @@ int Dictionary::size() const{
 // contains()
 // Returns true if there exists a pair such that key==k, and returns false
 // otherwise.
-bool Dictionary::contains(keyType k) const;
+bool Dictionary::contains(keyType k) const{
+	begin();
+	for (int i = 0; i != size(); i++){
+		if (this -> key == k){
+			return true;
+		}
+		next();
+	}
+	return false; //not finished.
+}
 
 // getValue()
 // Returns a reference to the value corresponding to key k.
 // Pre: contains(k)
-valType& Dictionary::getValue(keyType k) const;
+valType& Dictionary::getValue(keyType k) const{
+	begin();
+	for (int i = 0; i != size(); i++){
+		if (this -> key == k){
+			return this -> val;
+		}
+		next();
+	}
+	throw std:: length_error("Dictionary: getValue(): k does not exist.");
+}
 
 // hasCurrent()
 // Returns true if the current iterator is defined, and returns false 
@@ -198,12 +239,20 @@ void Dictionary::remove(keyType k);
 // begin()
 // If non-empty, places current iterator at the first (key, value) pair
 // (as defined by the order operator < on keys), otherwise does nothing. 
-void Dictionary::begin();
+void Dictionary::begin(){
+	if (size() == 0){
+		throw std:: length_error("Dictionary: begin(): empty dictionary.");
+	} //not finished.
+}
 
 // end()
 // If non-empty, places current iterator at the last (key, value) pair
 // (as defined by the order operator < on keys), otherwise does nothing. 
-void Dictionary::end();
+void Dictionary::end(){
+	if (size() == 0){
+		throw std:: length_error("Dictionary: end(): empty dictionary.");
+	} //not finished.
+}
 
 // next()
 // If the current iterator is not at the last pair, advances current 
@@ -238,7 +287,20 @@ std::string Dictionary::pre_string() const;
 // equals()
 // Returns true if and only if this Dictionary contains the same (key, value)
 // pairs as Dictionary D.
-bool Dictionary::equals(const Dictionary& D) const;
+bool Dictionary::equals(const Dictionary& D) const{
+	bool eq = false;
+	Node* N = this -> key -> left;
+	Node* M = D.key -> left;
+	
+	eq = (this -> size() == D.size());
+	
+	while (eq && N != nil){
+		eq = (N -> val == M -> val);
+		N = N.next();
+		M = M.next();
+	}
+	return eq;
+}
 
 
 // Overloaded Operators ----------------------------------------------------
@@ -246,14 +308,28 @@ bool Dictionary::equals(const Dictionary& D) const;
 // operator<<()
 // Inserts string representation of Dictionary D into stream, as defined by
 // member function to_string().
-std::ostream& operator<<( std::ostream& stream, Dictionary& D );
+std::ostream& operator<<( std::ostream& stream, Dictionary& D ){
+	return stream << D.Dictionary::to_string();
+}
 
 // operator==()
 // Returns true if and only if Dictionary A equals Dictionary B, as defined
 // by member function equals(). 
-bool operator==( const Dictionary& A, const Dictionary& B );
+bool operator==( const Dictionary& A, const Dictionary& B ){
+	return A.Dictionary::equals(B);
+}
 
 // operator=()
 // Overwrites the state of this Dictionary with state of D, and returns a
 // reference to this Dictionary.
-Dictionary& operator=( const Dictionary& D );
+Dictionary& operator=( const Dictionary& D ){
+	if (this != &D){
+		Dictionary temp = D;
+		
+		std::swap(nil, temp.nil);
+		std::swap(root, temp.root);
+		std::swap(current, temp.current);
+		std::swap(num_pairs, temp.num_pairs);
+	}
+	return *this; //not finished.
+}
