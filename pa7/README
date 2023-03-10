@@ -1,0 +1,20 @@
+# Nadia Shabbar #
+# nshabbar #
+# pa7 #
+
+Dictionary.h written by professor:
+used in Dictionary.cpp to define functions.
+
+DictionaryTest.cpp written by me:
+used to test Dictionary.cpp.
+
+Dictionary.cpp written by me:
+used in Order.cpp to order dictionary keys.
+
+Order.cpp written by me
+
+Makefile provided on webpage, altered as needed
+
+README written by me
+
+I had extra help from tutors, the professor, and my friend Tristen Miller.
