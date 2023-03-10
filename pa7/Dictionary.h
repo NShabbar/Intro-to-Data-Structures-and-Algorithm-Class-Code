@@ -38,9 +38,8 @@ private:
    int   num_pairs;
 
    // Helper Functions (Optional) ---------------------------------------------
-   Dictionary DInsert(Dictionary& D, Node* N);
    
-   Dictionary Transplant(Dictionary& D, Node* U, Node* V);
+   void Transplant(Node* U, Node* V);
 
    // inOrderString()
    // Appends a string representation of the tree rooted at R to string s. The
