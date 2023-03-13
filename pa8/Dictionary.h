@@ -27,6 +27,7 @@ private:
       Node* parent;
       Node* left;
       Node* right;
+	  int color;
       // Node constructor
       Node(keyType k, valType v);
    };
@@ -88,6 +89,26 @@ private:
    // Node before N in an in-order tree walk.  If N points to the leftmost 
    // Node, or is nil, returns nil.
    Node* findPrev(Node* N);
+   
+   // RBT Helper Functions (Optional) -----------------------------------------
+   
+   // LeftRotate()
+   void LeftRotate(Node* N);
+
+   // RightRotate()
+   void RightRotate(Node* N);
+
+   // RB_InsertFixUP()
+   void RB_InsertFixUp(Node* N);
+
+   // RB_Transplant()
+   void RB_Transplant(Node* u, Node* v);
+
+   // RB_DeleteFixUp()
+   void RB_DeleteFixUp(Node* N);
+
+   // RB_Delete()
+   void RB_Delete(Node* N);
 
 public:
 

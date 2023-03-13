@@ -10,6 +10,9 @@
 #include<stdexcept>
 #include"Dictionary.h"
 
+#define BLK 1
+#define RED 2
+
 using namespace std;
 // Helper Functions (Optional) ---------------------------------------------
 
@@ -159,6 +162,67 @@ void Dictionary::Transplant(Node* U, Node* V){
 		V -> parent = U -> parent;
 	}
 }
+// RBT Helper Functions (Optional) -----------------------------------------
+   
+// LeftRotate()
+void LeftRotate(Node* N){
+	// set y
+	Node Y = N.right;
+	// turn y's left subtree into N's right subtree
+	N.right = Y.left; 
+	if (Y.left != nil){    // not necessary if using sentinal nil node
+		Y.left.parent = N;
+	}
+	// link y's parent to N
+	Y.parent = N.parent;
+	if (N.parent == nil){
+		root = Y;
+	}
+	else if (N == N.parent.left){
+		N.parent.left = Y;
+	}
+	else{ 
+		N.parent.right = Y;
+	}
+	// put N on y's left
+	Y.left = N;
+	N.parent = Y;
+}
+
+// RightRotate()
+void RightRotate(Node* N){
+	// set y
+	Y = N.left; 	// turn y's right subtree into N's left subtree
+	N.left = Y.right 
+	if (Y.right != nil){  // not necessary if using sentinal nil node
+		Y.right.parent = N;
+	}
+	// link y's parent to N
+	Y.parent = N.parent;
+	if (N.parent == nil){
+		root = Y;
+	}
+	else if (N == N.parent.right){
+		N.parent.right = Y;
+	}else{ 
+		N.parent.left = Y;
+	}
+	// put N on y's right
+	Y.right = N;
+	N.parent = Y;
+}
+
+// RB_InsertFixUP()
+void RB_InsertFixUp(Node* N);
+
+// RB_Transplant()
+void RB_Transplant(Node* u, Node* v);
+
+// RB_DeleteFixUp()
+void RB_DeleteFixUp(Node* N);
+
+// RB_Delete()
+void RB_Delete(Node* N);
    
    
 // Class Constructors & Destructors ----------------------------------------
@@ -168,6 +232,7 @@ Dictionary::Node::Node(keyType k, valType v){
 	parent = nullptr;
 	left = nullptr;
 	right = nullptr;
+	color = BLK;
 }
 
 // Creates new Dictionary in the empty state. 
