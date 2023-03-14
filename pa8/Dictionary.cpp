@@ -165,9 +165,9 @@ void Dictionary::Transplant(Node* U, Node* V){
 // RBT Helper Functions (Optional) -----------------------------------------
    
 // LeftRotate()
-void LeftRotate(Node* N){
+void Dictionary::LeftRotate(Node* N){
 	// set y
-	Node Y = N.right;
+	Node* Y = N.right;
 	// turn y's left subtree into N's right subtree
 	N.right = Y.left; 
 	if (Y.left != nil){    // not necessary if using sentinal nil node
@@ -190,9 +190,9 @@ void LeftRotate(Node* N){
 }
 
 // RightRotate()
-void RightRotate(Node* N){
+void Dictionary::RightRotate(Node* N){
 	// set y
-	Y = N.left; 	// turn y's right subtree into N's left subtree
+	Node* Y = N.left; 	// turn y's right subtree into N's left subtree
 	N.left = Y.right 
 	if (Y.right != nil){  // not necessary if using sentinal nil node
 		Y.right.parent = N;
@@ -213,16 +213,93 @@ void RightRotate(Node* N){
 }
 
 // RB_InsertFixUP()
-void RB_InsertFixUp(Node* N);
+void Dictionary::RB_InsertFixUp(Node* N){
+	while (N.parent.color == RED){
+		if (N.parent == N.parent.parent.left){
+			Node* Y = N.parent.parent.right;
+			if (Y.color == RED){
+				N.parent.color = BLK;              // case 1
+				Y.color = BLK;                     // case 1
+				N.parent.parent.color = RED;         // case 1
+				N = N.parent.parent                 // case 1
+			}else{ 
+				if (N == N.parent.right){
+					N = N.parent;                     // case 2
+					LeftRotate(N);                 // case 2
+				}
+			N.parent.color = BLK;              // case 3
+            N.parent.parent.color = RED;         // case 3
+            RightRotate(N.parent.parent);     // case 3
+			}
+		}else{ 
+			Y = N.parent.parent.left;
+			if (Y.color == RED){
+				N.parent.color = BLK;              // case 4
+				Y.color = BLK;                     // case 4
+				N.parent.parent.color = RED;         // case 4
+				N = N.parent.parent;                 // case 4
+			}else{ 
+				if (N == N.parent.left){
+					N = N.parent;                     // case 5
+					RightRotate(N);                // case 5
+				}
+			}
+            N.parent.color = BLK;              // case 6
+            N.parent.parent.color = RED;         // case 6
+            LeftRotate(N.parent.parent);      // case 6
+	root.color = BLK;
+}
 
 // RB_Transplant()
-void RB_Transplant(Node* u, Node* v);
+void Dictionary::RB_Transplant(Node* u, Node* v){
+	if (u.parent == nil){
+		root = v;
+	}
+	else if (u == u.parent.left){
+		u.parent.left = v;
+	}else{
+		u.parent.right = v;
+	}
+	v.parent = u.parent;
+}
 
 // RB_DeleteFixUp()
-void RB_DeleteFixUp(Node* N);
+void Dictionary::RB_DeleteFixUp(Node* N){
+	
+}
 
 // RB_Delete()
-void RB_Delete(Node* N);
+void Dictionary::RB_Delete(Node* N){
+	Node* Y = N;
+	Node* X;
+	Y_OG_col = Y.color;
+	if (N.left == nil){
+		X = N.right;
+		RB_Transplant(N, N.right);
+	}
+	else if (N.right == nil){
+		X = N.left;
+		RB_Transplant(N, N.left);
+	}else{
+		Y = findMin(N.right);
+		Y_OG_col = Y.color;
+		X = Y.right;
+		if Y.parent == N){
+			X.parent = Y;
+		}else{
+			RB_Transplant(Y, Y.right);
+			Y.right = N.right;
+			Y.right.parent = Y;
+		}
+		RB_Transplant(N, Y);
+		Y.left = N.left;
+		Y.left.parent = Y;
+		Y.color = N.color;
+	}
+	if (Y_OG_col == BLK){
+		RB_DeleteFixUp(X);
+	}
+}
    
    
 // Class Constructors & Destructors ----------------------------------------
