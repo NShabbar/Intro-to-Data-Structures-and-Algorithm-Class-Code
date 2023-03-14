@@ -167,134 +167,186 @@ void Dictionary::Transplant(Node* U, Node* V){
 // LeftRotate()
 void Dictionary::LeftRotate(Node* N){
 	// set y
-	Node* Y = N.right;
+	Node* Y = N -> right;
 	// turn y's left subtree into N's right subtree
-	N.right = Y.left; 
-	if (Y.left != nil){    // not necessary if using sentinal nil node
-		Y.left.parent = N;
+	N -> right = Y -> left; 
+	if (Y -> left != nil){    // not necessary if using sentinal nil node
+		Y -> left -> parent = N;
 	}
 	// link y's parent to N
-	Y.parent = N.parent;
-	if (N.parent == nil){
+	Y -> parent = N -> parent;
+	if (N -> parent == nil){
 		root = Y;
 	}
-	else if (N == N.parent.left){
-		N.parent.left = Y;
+	else if (N == N -> parent -> left){
+		N -> parent -> left = Y;
 	}
 	else{ 
-		N.parent.right = Y;
+		N -> parent -> right = Y;
 	}
 	// put N on y's left
-	Y.left = N;
-	N.parent = Y;
+	Y -> left = N;
+	N -> parent = Y;
 }
 
 // RightRotate()
 void Dictionary::RightRotate(Node* N){
 	// set y
-	Node* Y = N.left; 	// turn y's right subtree into N's left subtree
-	N.left = Y.right 
-	if (Y.right != nil){  // not necessary if using sentinal nil node
-		Y.right.parent = N;
+	Node* Y = N -> left; 	// turn y's right subtree into N's left subtree
+	N -> left = Y -> right 
+	if (Y -> right != nil){  // not necessary if using sentinal nil node
+		Y -> right -> parent = N;
 	}
 	// link y's parent to N
-	Y.parent = N.parent;
-	if (N.parent == nil){
+	Y -> parent = N -> parent;
+	if (N -> parent == nil){
 		root = Y;
 	}
-	else if (N == N.parent.right){
-		N.parent.right = Y;
+	else if (N == N -> parent -> right){
+		N -> parent -> right = Y;
 	}else{ 
-		N.parent.left = Y;
+		N -> parent -> left = Y;
 	}
 	// put N on y's right
-	Y.right = N;
-	N.parent = Y;
+	Y -> right = N;
+	N -> parent = Y;
 }
 
 // RB_InsertFixUP()
 void Dictionary::RB_InsertFixUp(Node* N){
-	while (N.parent.color == RED){
-		if (N.parent == N.parent.parent.left){
-			Node* Y = N.parent.parent.right;
-			if (Y.color == RED){
-				N.parent.color = BLK;              // case 1
-				Y.color = BLK;                     // case 1
-				N.parent.parent.color = RED;         // case 1
-				N = N.parent.parent                 // case 1
+	while (N -> parent -> color == RED){
+		if (N -> parent == N -> parent -> parent -> left){
+			Node* Y = N -> parent -> parent -> right;
+			if (Y -> color == RED){
+				N -> parent -> color = BLK;              // case 1
+				Y -> color = BLK;                     // case 1
+				N -> parent -> parent -> color = RED;         // case 1
+				N = N -> parent -> parent                 // case 1
 			}else{ 
-				if (N == N.parent.right){
-					N = N.parent;                     // case 2
+				if (N == N -> parent -> right){
+					N = N -> parent;                     // case 2
 					LeftRotate(N);                 // case 2
 				}
-			N.parent.color = BLK;              // case 3
-            N.parent.parent.color = RED;         // case 3
-            RightRotate(N.parent.parent);     // case 3
+			N -> parent -> color = BLK;              // case 3
+            N -> parent -> parent -> color = RED;         // case 3
+            RightRotate(N -> parent -> parent);     // case 3
 			}
 		}else{ 
-			Y = N.parent.parent.left;
-			if (Y.color == RED){
-				N.parent.color = BLK;              // case 4
-				Y.color = BLK;                     // case 4
-				N.parent.parent.color = RED;         // case 4
-				N = N.parent.parent;                 // case 4
+			Y = N -> parent -> parent -> left;
+			if (Y -> color == RED){
+				N -> parent -> color = BLK;              // case 4
+				Y -> color = BLK;                     // case 4
+				N -> parent -> parent -> color = RED;         // case 4
+				N = N -> parent -> parent;                 // case 4
 			}else{ 
-				if (N == N.parent.left){
-					N = N.parent;                     // case 5
+				if (N == N -> parent -> left){
+					N = N -> parent;                     // case 5
 					RightRotate(N);                // case 5
 				}
 			}
-            N.parent.color = BLK;              // case 6
-            N.parent.parent.color = RED;         // case 6
-            LeftRotate(N.parent.parent);      // case 6
-	root.color = BLK;
+            N -> parent -> color = BLK;              // case 6
+            N -> parent -> parent -> color = RED;         // case 6
+            LeftRotate(N -> parent -> parent);      // case 6
+	root -> color = BLK;
 }
 
 // RB_Transplant()
 void Dictionary::RB_Transplant(Node* u, Node* v){
-	if (u.parent == nil){
+	if (u -> parent == nil){
 		root = v;
 	}
-	else if (u == u.parent.left){
-		u.parent.left = v;
+	else if (u == u -> parent -> left){
+		u -> parent -> left = v;
 	}else{
-		u.parent.right = v;
+		u -> parent -> right = v;
 	}
-	v.parent = u.parent;
+	v -> parent = u -> parent;
 }
 
 // RB_DeleteFixUp()
 void Dictionary::RB_DeleteFixUp(Node* N){
-	
+	Node* W;
+	while (N != root && (N -> color == BLK)){
+		if N == N -> parent -> left){
+			W = N -> parent -> right;
+			if (W -> color == RED){
+				W -> color = BLK;
+				N -> parent -> color = RED;
+				LeftRotate(N -> parent);
+				W = N -> parent -> right;
+			}
+			if ((W -> left -> color == BLK) && (W -> right -> color == BLK)){
+				W -> color = RED;
+				N = N -> parent;
+			}else{
+				if (W -> right -> color == BLK){
+					W -> left -> color = BLK;
+					W -> color = RED;
+					RightRotate(W);
+					W = N -> parent -> right;
+				}
+				W -> color = N -> parent -> color;
+				N -> parent -> color = BLK;
+				W -> right -> color = BLK;
+				LeftRotate(N -> parent);
+				N = root;
+			}
+		}else{
+			W = N -> parent -> left;
+			if (W -> color == RED){
+				W -> color = BLK;
+				N -> parent -> color = RED;
+				RightRotate(N -> parent);
+				W = N -> parent -> left;
+			}
+			if ((W -> right -> color == BLK) && (W -> left -> color == BLK)){
+				W -> color = RED;
+				N = N -> parent;
+			}else{
+				if (W -> left -> color == BLK){
+					W -> right -> color = BLK;
+					W -> color = RED;
+					LeftRotate(W);
+					W = N -> parent -> left;
+				}
+				W -> color = N -> parent -> color;
+				N -> parent -> color = BLK;
+				W -> left -> color = BLK;
+				RightRotate(N -> parent);
+				N = root;
+			}
+		}
+	}
+	N -> color = BLK;				
 }
 
 // RB_Delete()
 void Dictionary::RB_Delete(Node* N){
 	Node* Y = N;
 	Node* X;
-	Y_OG_col = Y.color;
-	if (N.left == nil){
-		X = N.right;
-		RB_Transplant(N, N.right);
+	Y_OG_col = Y -> color;
+	if (N -> left == nil){
+		X = N -> right;
+		RB_Transplant(N, N -> right);
 	}
-	else if (N.right == nil){
-		X = N.left;
-		RB_Transplant(N, N.left);
+	else if (N -> right == nil){
+		X = N -> left;
+		RB_Transplant(N, N -> left);
 	}else{
-		Y = findMin(N.right);
-		Y_OG_col = Y.color;
-		X = Y.right;
-		if Y.parent == N){
-			X.parent = Y;
+		Y = findMin(N -> right);
+		Y_OG_col = Y -> color;
+		X = Y -> right;
+		if Y -> parent == N){
+			X -> parent = Y;
 		}else{
-			RB_Transplant(Y, Y.right);
-			Y.right = N.right;
-			Y.right.parent = Y;
+			RB_Transplant(Y, Y -> right);
+			Y -> right = N -> right;
+			Y -> right -> parent = Y;
 		}
 		RB_Transplant(N, Y);
-		Y.left = N.left;
-		Y.left.parent = Y;
-		Y.color = N.color;
+		Y -> left = N -> left;
+		Y -> left -> parent = Y;
+		Y -> color = N -> color;
 	}
 	if (Y_OG_col == BLK){
 		RB_DeleteFixUp(X);
@@ -442,6 +494,12 @@ void Dictionary::setValue(keyType k, valType v){
 	}else{
 		y -> right = N;
 	}
+	if (contains(N -> key)){
+		int value = getValue(N -> val) + 1;
+		setValue(N -> k, value);
+	}else{
+		setValue(N -> k, 1);
+	}
 }
 
 // remove()
@@ -453,25 +511,7 @@ void Dictionary::remove(keyType k){
 		throw std:: logic_error("Dictionary: remove(): k not contained in Dictionary.");
 	}
 	Node* del = search(root, k);
-	if (del -> left == nil){
-		Transplant(del, del -> right);
-	}
-	else if (del -> right == nil){
-		Transplant(del, del -> left);
-	}else{
-		Node* min = findMin(del -> right);
-		if (min -> parent != del){
-			Transplant(min, min -> right);
-			min -> right = del -> right;
-			min -> right -> parent = min;
-		}
-		Transplant(del, min);
-		min -> left = del -> left;
-		min -> left -> parent = min;
-	}
-	if (del == current){
-		current = nil;
-	}
+	RB_Delete(del);
 	delete(del);
 	num_pairs--;
 }
