@@ -15,7 +15,12 @@
 #  make OrderCheck          runs Order under valgrind on in5 junk5
 #  make DictionaryCheck     runs DictionaryClient under valgrind
 #------------------------------------------------------------------------------
+WordFrequency : WordFrequency.o Dictionary.o
+	g++ -std=c++17 -Wall -g -o WordFrequency WordFrequency.o Dictionary.o
 
+WordFrequency.o : Dictionary.h WordFrequency.cpp
+	g++ -std=c++17 -Wall -g -c WordFrequency.cpp
+	
 Order : Order.o Dictionary.o
 	g++ -std=c++17 -Wall -g -o Order Order.o Dictionary.o
 
@@ -38,10 +43,13 @@ Dictionary.o : Dictionary.h Dictionary.cpp
 	g++ -std=c++17 -Wall -g -c Dictionary.cpp
 
 clean :
-	rm -f *.o Order DictionaryClient DictionaryTest DictionaryTest
+	rm -f *.o Order DictionaryClient DictionaryTest DictionaryTest WordFrequency
 
 check1 : DictionaryClient
 	valgrind --leak-check=full DictionaryClient
 
 check2 : Order
 	valgrind --leak-check=full Order 35
+	
+check3 : WordFrequency
+	valgrind --leak-check=full WordFrequency 35

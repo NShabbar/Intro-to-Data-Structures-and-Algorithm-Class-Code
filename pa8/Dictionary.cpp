@@ -193,7 +193,7 @@ void Dictionary::LeftRotate(Node* N){
 void Dictionary::RightRotate(Node* N){
 	// set y
 	Node* Y = N -> left; 	// turn y's right subtree into N's left subtree
-	N -> left = Y -> right 
+	N -> left = Y -> right; 
 	if (Y -> right != nil){  // not necessary if using sentinal nil node
 		Y -> right -> parent = N;
 	}
@@ -214,22 +214,23 @@ void Dictionary::RightRotate(Node* N){
 
 // RB_InsertFixUP()
 void Dictionary::RB_InsertFixUp(Node* N){
+	Node* Y;
 	while (N -> parent -> color == RED){
 		if (N -> parent == N -> parent -> parent -> left){
-			Node* Y = N -> parent -> parent -> right;
+			Y = N -> parent -> parent -> right;
 			if (Y -> color == RED){
 				N -> parent -> color = BLK;              // case 1
 				Y -> color = BLK;                     // case 1
 				N -> parent -> parent -> color = RED;         // case 1
-				N = N -> parent -> parent                 // case 1
+				N = N -> parent -> parent;                 // case 1
 			}else{ 
 				if (N == N -> parent -> right){
 					N = N -> parent;                     // case 2
 					LeftRotate(N);                 // case 2
 				}
-			N -> parent -> color = BLK;              // case 3
-            N -> parent -> parent -> color = RED;         // case 3
-            RightRotate(N -> parent -> parent);     // case 3
+				N -> parent -> color = BLK;              // case 3
+				N -> parent -> parent -> color = RED;         // case 3
+				RightRotate(N -> parent -> parent);     // case 3
 			}
 		}else{ 
 			Y = N -> parent -> parent -> left;
@@ -243,10 +244,12 @@ void Dictionary::RB_InsertFixUp(Node* N){
 					N = N -> parent;                     // case 5
 					RightRotate(N);                // case 5
 				}
+				N -> parent -> color = BLK;              // case 6
+				N -> parent -> parent -> color = RED;         // case 6
+				LeftRotate(N -> parent -> parent);      // case 6
 			}
-            N -> parent -> color = BLK;              // case 6
-            N -> parent -> parent -> color = RED;         // case 6
-            LeftRotate(N -> parent -> parent);      // case 6
+		}
+	}
 	root -> color = BLK;
 }
 
@@ -267,7 +270,7 @@ void Dictionary::RB_Transplant(Node* u, Node* v){
 void Dictionary::RB_DeleteFixUp(Node* N){
 	Node* W;
 	while (N != root && (N -> color == BLK)){
-		if N == N -> parent -> left){
+		if (N == N -> parent -> left){
 			W = N -> parent -> right;
 			if (W -> color == RED){
 				W -> color = BLK;
@@ -324,7 +327,7 @@ void Dictionary::RB_DeleteFixUp(Node* N){
 void Dictionary::RB_Delete(Node* N){
 	Node* Y = N;
 	Node* X;
-	Y_OG_col = Y -> color;
+	int Y_OG_col = Y -> color;
 	if (N -> left == nil){
 		X = N -> right;
 		RB_Transplant(N, N -> right);
@@ -336,7 +339,7 @@ void Dictionary::RB_Delete(Node* N){
 		Y = findMin(N -> right);
 		Y_OG_col = Y -> color;
 		X = Y -> right;
-		if Y -> parent == N){
+		if (Y -> parent == N){
 			X -> parent = Y;
 		}else{
 			RB_Transplant(Y, Y -> right);
@@ -471,6 +474,7 @@ void Dictionary::setValue(keyType k, valType v){
 	Node* N = new Node(k, v);
 	N -> left = nil;
 	N -> right = nil;
+	N -> color = RED;
 	while (R != nil){
 		y = R;
 		if (R -> key == k){
@@ -494,12 +498,7 @@ void Dictionary::setValue(keyType k, valType v){
 	}else{
 		y -> right = N;
 	}
-	if (contains(N -> key)){
-		int value = getValue(N -> val) + 1;
-		setValue(N -> k, value);
-	}else{
-		setValue(N -> k, 1);
-	}
+	RB_InsertFixUp(N);
 }
 
 // remove()
@@ -511,6 +510,9 @@ void Dictionary::remove(keyType k){
 		throw std:: logic_error("Dictionary: remove(): k not contained in Dictionary.");
 	}
 	Node* del = search(root, k);
+	if (del == current){
+		current = nil;
+	}
 	RB_Delete(del);
 	delete(del);
 	num_pairs--;

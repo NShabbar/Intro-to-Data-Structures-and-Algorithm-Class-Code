@@ -13,6 +13,8 @@ used in Order.cpp to order dictionary keys.
 
 Order.cpp written by me
 
+WordFrequency.cpp written by me
+
 Makefile provided on webpage, altered as needed
 
 README written by me
